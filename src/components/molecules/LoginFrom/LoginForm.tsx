@@ -1,8 +1,9 @@
 import React from 'react';
+import { Button } from '@/components/ui/button';
 
 const Form = () => {
   return (
-    <div className='flex flex-col items-center justify-center h-screen bg-slate-300'>
+    <div className='flex flex-col items-center justify-center h-screen'>
       <div className='w-full max-w-md bg-white rounded-lg shadow-md p-6'>
         <h2 className='text-2xl font-bold text-gray-900 mb-4'>Login</h2>
         <form className='flex flex-col'>
@@ -32,12 +33,12 @@ const Form = () => {
               </a>
             </p>
           </div>
-          <button
-            type='submit'
-            className='bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150'
-          >
+          <Button variant={'default'} type='submit' className='py-2 px-4 mt-4'>
             Login
-          </button>
+          </Button>
+          <Button variant={'outline'} type='reset' className='py-2 px-4 mt-4'>
+            Clear Form
+          </Button>
         </form>
       </div>
     </div>
