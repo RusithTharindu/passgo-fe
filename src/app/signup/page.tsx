@@ -1,7 +1,11 @@
-import React from 'react';
+import SignUpForm from '@/components/molecules/SignUpForm/SignUpForm';
 
 const SignUp = () => {
-  return <div>SignUp</div>;
+  return (
+    <>
+      <SignUpForm />
+    </>
+  );
 };
 
 export default SignUp;
