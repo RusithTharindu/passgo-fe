@@ -28,7 +28,7 @@ const Form = () => {
             <p className='text-gray-900 mt-4'>
               {' '}
               Don&apos;t have an account?{' '}
-              <a href='#' className='text-sm text-blue-500 -200 hover:underline mt-4'>
+              <a href='/signup' className='text-sm text-blue-500 -200 hover:underline mt-4'>
                 Signup
               </a>
             </p>
