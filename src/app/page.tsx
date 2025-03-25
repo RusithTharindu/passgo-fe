@@ -1,11 +1,9 @@
-import React from "react";
+import LandingPage from '@/components/organisms/LandingPage';
 
-const Home = () => {
+export default function Home() {
   return (
-    <div>
-      <h1>Home</h1>
-    </div>
-  )
+    <>
+      <LandingPage />
+    </>
+  );
 }
-
-export default Home;
