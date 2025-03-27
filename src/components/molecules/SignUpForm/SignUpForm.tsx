@@ -20,7 +20,40 @@ const signUpSchema = z
       .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
     confirmPassword: z.string(),
     gender: z.enum(['male', 'female', 'other']),
-    age: z.string(),
+    birthdate: z
+      .string()
+      .refine(
+        date => {
+          // Check if a date is provided
+          if (!date) return false;
+
+          // Check if it's a valid date
+          const birthDate = new Date(date);
+          if (isNaN(birthDate.getTime())) return false;
+
+          // Check if birthdate is not in the future
+          return birthDate <= new Date();
+        },
+        { message: 'Please enter a valid birthdate (not in the future)' },
+      )
+      .refine(
+        date => {
+          // Check age is at least 13 years
+          const birthDate = new Date(date);
+          const today = new Date();
+          const age = today.getFullYear() - birthDate.getFullYear();
+          const monthDiff = today.getMonth() - birthDate.getMonth();
+
+          // If the birth month is after the current month or
+          // if birth month is the current month but the birth day is after today
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            return age - 1 >= 13;
+          }
+
+          return age >= 13;
+        },
+        { message: 'You must be at least 13 years old to register' },
+      ),
   })
   .refine(data => data.email === data.confirmEmail, {
     message: "Emails don't match",
@@ -55,7 +88,7 @@ const Form = () => {
       password: '',
       confirmPassword: '',
       gender: 'male',
-      age: '',
+      birthdate: '',
     },
   });
 
@@ -161,16 +194,18 @@ const Form = () => {
           </select>
           {errors.gender && <p className='text-red-500 text-xs mb-3'>{errors.gender.message}</p>}
 
-          <label className='text-sm mb-2 text-gray-900 cursor-pointer' htmlFor='age'>
-            Age
+          <label className='text-sm mb-2 text-gray-900 cursor-pointer' htmlFor='birthdate'>
+            Birth Date
           </label>
           <input
             className='bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-1'
-            id='age'
+            id='birthdate'
             type='date'
-            {...register('age')}
+            {...register('birthdate')}
           />
-          {errors.age && <p className='text-red-500 text-xs mb-3'>{errors.age.message}</p>}
+          {errors.birthdate && (
+            <p className='text-red-500 text-xs mb-3'>{errors.birthdate.message}</p>
+          )}
 
           <p className='text-gray-900 mt-4'>
             {' '}
