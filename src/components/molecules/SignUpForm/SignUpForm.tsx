@@ -98,9 +98,9 @@ const Form = () => {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center h-screen'>
+    <div className='flex flex-col items-center justify-center h-screen bg-[#3B82F6] md:bg-transparent'>
       <div className='w-full max-w-md bg-white rounded-lg shadow-md p-6'>
-        <h2 className='text-2xl font-bold text-gray-900 mb-4'>Sign Up</h2>
+        <h2 className='text-2xl font-bold text-gray-900 mb-4'>Sign Up using Email</h2>
         <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
           <input
             placeholder='First Name'
