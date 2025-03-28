@@ -1,23 +1,14 @@
 'use client';
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
-
-// Define validation schema with Zod
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }),
-  password: z.string().min(1, { message: 'Password is required' }),
-  rememberMe: z.boolean().optional(),
-});
-
-// Type for our form values
-type LoginFormValues = z.infer<typeof loginSchema>;
+import { LoginSchema } from '@/utils/validation/LoginSchema';
+import { LoginFormValues } from '@/types/formTypes';
 
 const LoginForm = () => {
-  // Add state for password visibility
   const [showPassword, setShowPassword] = useState(false);
 
   // Initialize react-hook-form with zod resolver
@@ -27,7 +18,7 @@ const LoginForm = () => {
     formState: { errors },
     reset,
   } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: '',
       password: '',
