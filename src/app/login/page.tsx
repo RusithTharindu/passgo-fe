@@ -1,6 +1,6 @@
 'use client';
 import LoginForm from '@/components/molecules/LoginForm/LoginForm';
-import { colors } from '@/common/config/colors';
+import { colors } from '@/config/colors';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
