@@ -1,9 +1,30 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { GovernmentLogo } from './government-logo';
-import Link from 'next/link';
+import Cookies from 'js-cookie';
+import { decode, JwtPayload } from 'jsonwebtoken';
+import { useRouter } from 'next/navigation';
 
 export function HeroSection() {
+  const router = useRouter();
+  const onClick = () => {
+    const accessToken = Cookies.get('token');
+    if (accessToken) {
+      const decodedToken = decode(accessToken) as JwtPayload;
+      const role = decodedToken.role;
+      if (role === 'admin') {
+        router.push('/admin/dashboard');
+      } else if (role === 'applicant') {
+        router.push('/applicant/dashboard');
+      } else {
+        router.push('/');
+      }
+    } else {
+      router.push('/login');
+    }
+  };
+
   return (
     <section className='bg-[#112e51] py-8 md:py-12 lg:py-16 text-white'>
       <div className='container px-4 md:px-6 mx-auto max-w-6xl'>
@@ -22,11 +43,11 @@ export function HeroSection() {
               </p>
             </div>
             <div className='flex flex-col gap-2 sm:flex-row justify-center lg:justify-start'>
-              <Link href={'/login'}>
-                <Button className='bg-white text-[#112e51] hover:bg-white/90'>
-                  Start Application
-                </Button>
-              </Link>
+              {/* <Link href={'/login'} > */}
+              <Button className='bg-white text-[#112e51] hover:bg-white/90' onClick={onClick}>
+                Start Application
+              </Button>
+              {/* </Link> */}
               <Button
                 variant='outline'
                 className='border-white text-white hover:bg-white/10 bg-transparent'
