@@ -4,6 +4,7 @@ import { ServicesSection } from '@/components/molecules/landing/service-section'
 import { ApplicationProcess } from '@/components/molecules/landing/application-process';
 import { AssistanceSection } from '@/components/molecules/landing/assistance-section';
 import { Footer } from '@/components/molecules/landing/footer';
+import WorldwideSection from '@/components/molecules/landing/WorldwideSection';
 
 const LandingPage = () => {
   return (
@@ -11,6 +12,7 @@ const LandingPage = () => {
       <main className='flex-1'>
         <HeroSection />
         <ServicesSection />
+        <WorldwideSection />
         <ApplicationProcess />
         <AssistanceSection />
       </main>

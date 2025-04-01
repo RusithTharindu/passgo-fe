@@ -8,3 +8,8 @@ export interface ErrorResponse {
   message: string;
   status: number;
 }
+
+export type LoginRequest = {
+  email: string;
+  password: string;
+};
