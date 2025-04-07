@@ -14,11 +14,11 @@ const HeaderNavigation = () => {
   // const { user } = useAuth();
 
   const navLinks = [
-    { href: '/applicant/dashboard', label: 'Dashboard' },
+    { href: '/applicant/home', label: 'Home' },
     { href: '/applicant/applications', label: 'My Applications' },
+    { href: '/applicant/documents', label: 'Services' },
+    { href: '/applicant/support', label: 'Help & Support' },
     { href: '/applicant/profile', label: 'Profile' },
-    { href: '/applicant/documents', label: 'Documents' },
-    { href: '/applicant/support', label: 'Support' },
   ];
 
   const variants = {
@@ -59,7 +59,7 @@ const HeaderNavigation = () => {
               >
                 <Link
                   href={link.href}
-                  className='text-gray-700 hover:text-blue-600 transition-colors font-medium'
+                  className='text-gray-700 hover:text-blue-600 transition-colors font-medium align-middle'
                 >
                   {link.label}
                 </Link>
@@ -112,8 +112,8 @@ const HeaderNavigation = () => {
         }}
         transition={{ duration: 0.3 }}
       >
-        <Container className='p-0'>
-          <div className='py-3 space-y-3 bg-gray-50'>
+        <Container className='px-10'>
+          <div className='py-3 space-y-3'>
             {navLinks.map(link => (
               <motion.div
                 key={link.href}
