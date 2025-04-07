@@ -1,49 +1,72 @@
-// import { NextResponse } from 'next/server';
-// import type { NextRequest } from 'next/server';
-// import { TOKEN_KEY } from './utils/helpers/cookieStorage';
-// import Cookies from "js-cookie";
-// import { decode, JwtPayload } from 'jsonwebtoken'
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { TOKEN_KEY } from './utils/helpers/cookieStorage';
+import { decode, JwtPayload } from 'jsonwebtoken';
 
-// export function middleware(request: NextRequest) {
-//   // const token = request.cookies.get(TOKEN_KEY);
-//   const token = Cookies.get("token");
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get(TOKEN_KEY)?.value;
+  const pathname = request.nextUrl.pathname;
 
-//   // Define auth pages (login and signup)
-//   const isAuthPage =
-//     request.nextUrl.pathname === '/login' ||
-//     request.nextUrl.pathname === '/signup';
+  // Auth pages that don't require authentication
+  const isAuthPage = ['/login', '/signup'].includes(pathname);
 
-//   // Define protected pages that require authentication
-//   const isProtectedPage =
-//     request.nextUrl.pathname.startsWith('/dashboard') ||
-//     request.nextUrl.pathname.startsWith('/profile') ||
-//     request.nextUrl.pathname.startsWith('/application');
+  // Public pages accessible to everyone
+  const isPublicPage = ['/', '/about', '/contact'].some(
+    path => pathname === path || pathname.startsWith('/api/'),
+  );
 
-//   // If accessing protected page without token, redirect to login
-//   if (isProtectedPage && !token) {
-//     return NextResponse.redirect(new URL('/login', request.url));
-//   }
+  // If no token and trying to access a protected page, redirect to login
+  if (!token && !isAuthPage && !isPublicPage) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
-//   // If accessing auth page with token, redirect to dashboard
-//   if (isAuthPage && token) {
-//     const decodedToken = decode(token) as JwtPayload;
-//     const role = decodedToken.role;
-//     if (role === "admin") {
-//       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
-//     } else if (role === "applicant") {
-//       return NextResponse.redirect(new URL('/applicant/dashboard', request.url));
-//     } else {
-//       return NextResponse.redirect(new URL('/', request.url));
-//     }
-//     // return NextResponse.redirect(new URL('/dashboard', request.url));
-//   }
+  // If token exists
+  if (token) {
+    try {
+      // Decode token to get user role
+      const decodedToken = decode(token) as JwtPayload;
+      const role = decodedToken.role as string;
 
-//   return NextResponse.next();
-// }
+      // If user is on auth pages with valid token, redirect based on role
+      if (isAuthPage) {
+        if (role === 'admin') {
+          return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+        } else if (role === 'applicant') {
+          return NextResponse.redirect(new URL('/applicant/dashboard', request.url));
+        }
+      }
 
-// // Configure which routes use this middleware
-// export const config = {
-//   matcher: ['/login', '/signup', '/dashboard/:path*', '/profile/:path*', '/application/:path*'],
-// };
+      // Role-based access control
+      if (pathname.startsWith('/admin') && role !== 'admin') {
+        // Non-admins trying to access admin routes
+        if (role === 'applicant') {
+          return NextResponse.redirect(new URL('/applicant/dashboard', request.url));
+        } else {
+          return NextResponse.redirect(new URL('/', request.url));
+        }
+      }
 
-export function middleware() {}
+      if (pathname.startsWith('/applicant') && role !== 'applicant') {
+        // Non-applicants trying to access applicant routes
+        if (role === 'admin') {
+          return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+        } else {
+          return NextResponse.redirect(new URL('/', request.url));
+        }
+      }
+    } catch (error) {
+      // Invalid token, clear it and redirect to login
+      const response = NextResponse.redirect(new URL('/login', request.url));
+      response.cookies.delete(TOKEN_KEY);
+      console.error('Token validation error:', error);
+      return response;
+    }
+  }
+
+  return NextResponse.next();
+}
+
+// Configure which routes use this middleware
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.png$).*)'],
+};
