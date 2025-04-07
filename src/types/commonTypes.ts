@@ -4,6 +4,6 @@ export type ServiceCardType = {
   description: string;
   image: string;
   link: string;
-  imagePosition: string;
+  imagePosition: 'left' | 'right';
   linkText: string;
 };
