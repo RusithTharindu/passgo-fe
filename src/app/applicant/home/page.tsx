@@ -15,7 +15,16 @@ const ApplicantHome = () => {
 
       <div className='space-y-24'>
         {ApplicantServices.map(service => (
-          <ServiceCard key={service.id} {...service} />
+          <ServiceCard
+            key={service.id}
+            id={service.id}
+            title={service.title}
+            description={service.description}
+            image={service.image}
+            link={service.link}
+            imagePosition={service.imagePosition}
+            linkText={service.linkText}
+          />
         ))}
       </div>
     </div>

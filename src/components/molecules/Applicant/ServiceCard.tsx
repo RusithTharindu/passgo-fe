@@ -15,11 +15,11 @@ const ServiceCard = ({
   linkText,
 }: ServiceCardType) => {
   return (
-    <div key={id} className='flex flex-col md:flex-row items-center gap-8'>
+    <div key={id} className='flex flex-col md:flex-row items-center gap-8 group'>
       {imagePosition === 'left' ? (
         <>
           <div className='w-full md:w-1/2 flex-col-reverse md:flex-row'>
-            <div className='relative h-64 md:h-96 w-full rounded-lg overflow-hidden shadow-lg'>
+            <div className='relative h-64 md:h-96 w-full rounded-lg overflow-hidden shadow-lg group-hover:scale-105 transition-all duration-300'>
               <Image
                 src={image}
                 alt={title}
@@ -32,7 +32,9 @@ const ServiceCard = ({
           <div className='w-full md:w-1/2'>
             <Card className='border-0 shadow-none'>
               <CardContent className='p-6'>
-                <h2 className='text-2xl font-bold text-gray-900 mb-4'>{title}</h2>
+                <h2 className='text-2xl font-bold text-gray-900 mb-4 group-hover:text-[#3B82F6]'>
+                  {title}
+                </h2>
                 <p className='text-gray-600 mb-6'>{description}</p>
                 <Button asChild>
                   <Link href={link}>{linkText}</Link>
@@ -46,7 +48,9 @@ const ServiceCard = ({
           <div className='w-full md:w-1/2'>
             <Card className='border-0 shadow-none'>
               <CardContent className='p-6'>
-                <h2 className='text-2xl font-bold text-gray-900 mb-4'>{title}</h2>
+                <h2 className='text-2xl font-bold text-gray-900 mb-4 group-hover:text-[#3B82F6]'>
+                  {title}
+                </h2>
                 <p className='text-gray-600 mb-6'>{description}</p>
                 <Button asChild>
                   <Link href={link}>{linkText}</Link>
@@ -55,7 +59,7 @@ const ServiceCard = ({
             </Card>
           </div>
           <div className='w-full md:w-1/2'>
-            <div className='relative h-64 md:h-96 w-full rounded-lg overflow-hidden shadow-lg'>
+            <div className='relative h-64 md:h-96 w-full rounded-lg overflow-hidden shadow-lg group-hover:scale-105 transition-all duration-300'>
               <Image
                 src={image}
                 alt={title}
