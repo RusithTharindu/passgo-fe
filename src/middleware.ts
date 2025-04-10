@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
         if (role === 'admin') {
           return NextResponse.redirect(new URL('/admin/dashboard', request.url));
         } else if (role === 'applicant') {
-          return NextResponse.redirect(new URL('/applicant/dashboard', request.url));
+          return NextResponse.redirect(new URL('/applicant/home', request.url));
         }
       }
 
@@ -40,7 +40,7 @@ export function middleware(request: NextRequest) {
       if (pathname.startsWith('/admin') && role !== 'admin') {
         // Non-admins trying to access admin routes
         if (role === 'applicant') {
-          return NextResponse.redirect(new URL('/applicant/dashboard', request.url));
+          return NextResponse.redirect(new URL('/applicant/home', request.url));
         } else {
           return NextResponse.redirect(new URL('/', request.url));
         }

@@ -16,7 +16,7 @@ export function HeroSection() {
       if (role === 'admin') {
         router.push('/admin/dashboard');
       } else if (role === 'applicant') {
-        router.push('/applicant/dashboard');
+        router.push('/applicant/home');
       } else {
         router.push('/');
       }
