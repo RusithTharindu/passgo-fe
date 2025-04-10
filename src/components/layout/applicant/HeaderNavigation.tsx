@@ -1,0 +1,152 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+// import Image from 'next/image';
+import { motion } from 'motion/react';
+import { User, Menu, X } from 'lucide-react';
+// import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Container } from '@/components/ui/container';
+
+const HeaderNavigation = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  // const { user } = useAuth();
+
+  const navLinks = [
+    { href: '/applicant/home', label: 'Home' },
+    { href: '/applicant/applications', label: 'My Applications' },
+    { href: '/applicant/documents', label: 'Services' },
+    { href: '/applicant/support', label: 'Help & Support' },
+    { href: '/applicant/profile', label: 'Profile' },
+  ];
+
+  const variants = {
+    open: { opacity: 1, x: 0 },
+    closed: { opacity: 0, x: '-100%' },
+  };
+
+  return (
+    <header className='sticky top-0 z-50 bg-white shadow-sm'>
+      <Container>
+        <div className='flex items-center justify-between py-3'>
+          {/* Logo - Left Section */}
+          <motion.div
+            className='flex-shrink-0'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Link href='/'>
+              <div className='flex items-center'>
+                {/* TODO: Add logo */}
+                {/* <Image src='/src/' alt='PassGo Logo' width={40} height={40} className='mr-2' /> */}
+                <span className='text-xl font-bold text-blue-600 hidden sm:inline-block'>
+                  PassGo
+                </span>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Nav Links - Middle Section (Hidden on Mobile) */}
+          <nav className='hidden md:flex items-center justify-center flex-1 mx-10 space-x-6'>
+            {navLinks.map((link, index) => (
+              <motion.div
+                key={link.href}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <Link
+                  href={link.href}
+                  className='text-gray-700 hover:text-blue-600 transition-colors font-medium align-middle'
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
+            ))}
+          </nav>
+
+          {/* User Profile - Right Section */}
+          <motion.div
+            className='flex items-center'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <div className='hidden sm:flex items-center'>
+              <div className='mr-2 text-right'>
+                {/* TODO: Add user name and email */}
+                {/* <p className='text-sm font-medium'>{user?.name || 'Applicant User'}</p> */}
+                <p className='text-sm font-medium'>{'Applicant User'}</p>
+                {/* <p className='text-xs text-gray-500'>{user?.email || 'applicant@example.com'}</p> */}
+                <p className='text-xs text-gray-500'>{'applicant@example.com'}</p>
+              </div>
+              <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600'>
+                <User size={20} />
+              </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className='md:hidden ml-2'>
+              <Button
+                variant='ghost'
+                size='icon'
+                onClick={() => setIsOpen(!isOpen)}
+                aria-label='Toggle menu'
+              >
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </Container>
+
+      {/* Mobile Menu */}
+      <motion.div
+        className='md:hidden overflow-hidden'
+        animate={isOpen ? 'open' : 'closed'}
+        variants={{
+          open: { height: 'auto', opacity: 1 },
+          closed: { height: 0, opacity: 0 },
+        }}
+        transition={{ duration: 0.3 }}
+      >
+        <Container className='px-10'>
+          <div className='py-3 space-y-3'>
+            {navLinks.map(link => (
+              <motion.div
+                key={link.href}
+                variants={variants}
+                className='border-b border-gray-200 py-2'
+              >
+                <Link
+                  href={link.href}
+                  className='block text-gray-700 hover:text-blue-600 transition-colors'
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
+            ))}
+
+            <div className='pt-4 flex items-center'>
+              <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3'>
+                <User size={20} />
+              </div>
+              <div>
+                {/* TODO: Add user name and email */}
+                {/* <p className='text-sm font-medium'>{user?.name || 'Applicant User'}</p> */}
+                <p className='text-sm font-medium'>{'Applicant User'}</p>
+                {/* <p className='text-xs text-gray-500'>{user?.email || 'applicant@example.com'}</p> */}
+                <p className='text-xs text-gray-500'>{'applicant@example.com'}</p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </motion.div>
+    </header>
+  );
+};
+
+export default HeaderNavigation;
