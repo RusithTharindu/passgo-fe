@@ -37,7 +37,7 @@ const HeaderNavigation = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <Link href='/applicant/home'>
+            <Link href='/'>
               <div className='flex items-center'>
                 {/* TODO: Add logo */}
                 {/* <Image src='/src/' alt='PassGo Logo' width={40} height={40} className='mr-2' /> */}
