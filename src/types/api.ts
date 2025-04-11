@@ -9,7 +9,17 @@ export interface ErrorResponse {
   status: number;
 }
 
-export type LoginRequest = {
+export interface LoginRequest {
   email: string;
   password: string;
-};
+}
+
+export interface SignUpRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  gender: string;
+  birthdate: string;
+  role: 'applicant';
+}

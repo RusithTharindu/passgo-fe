@@ -1,5 +1,5 @@
-import { loginApi } from '@/api/common/authApi/AuthApi';
-import { LoginRequest } from '@/types/api';
+import { loginApi, signUpApi } from '@/api/common/authApi/AuthApi';
+import { LoginRequest, SignUpRequest } from '@/types/api';
 import { useMutation } from '@tanstack/react-query';
 import { tokenStorage } from '@/utils/helpers/cookieStorage';
 import { authQueryKeys } from '@/api/common/authApi/AuthQueryKeys';
@@ -24,6 +24,16 @@ export const useLogin = () => {
         description: `${error.message}, Please try again later`,
         variant: 'destructive',
       });
+    },
+  });
+};
+
+export const useSignUp = () => {
+  return useMutation({
+    mutationKey: authQueryKeys.signup,
+    mutationFn: async (data: SignUpRequest) => await signUpApi(data),
+    onError: error => {
+      console.error(error);
     },
   });
 };

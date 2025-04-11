@@ -38,7 +38,7 @@ const HeaderNavigation = () => {
     closed: { opacity: 0, x: '-100%' },
   };
 
-  const userName = profileData?.name;
+  const userName = profileData?.firstName + ' ' + profileData?.lastName;
   const userEmail = profileData?.email;
 
   return (
