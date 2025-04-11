@@ -88,7 +88,7 @@ const HeaderNavigation = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <div className='md:hidden ml-2'>
+            <div className='md:hidden ml-2 flex flex-row items-center justify-between'>
               <Button
                 variant='ghost'
                 size='icon'

@@ -34,7 +34,7 @@ export function HeroSection() {
         <div className='grid gap-6 lg:grid-cols-2 lg:gap-12'>
           <div className='flex flex-col justify-center space-y-4 text-center lg:text-left'>
             <div className='space-y-2 mx-auto lg:mx-0 max-w-xl'>
-              <h2 className='text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl'>
+              <h2 className='text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl text-white'>
                 Sri Lanka Passport Application Portal
               </h2>
               <p className='text-white/80 md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed'>
