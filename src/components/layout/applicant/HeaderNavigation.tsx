@@ -4,16 +4,18 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 // import Image from 'next/image';
 import { motion } from 'motion/react';
-import { User, Menu, X } from 'lucide-react';
-// import { useAuth } from '@/contexts/AuthContext';
+import { User, Menu, X, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { useProfileData } from '@/hooks/useProfile';
 import { toast } from '@/hooks/use-toast';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const HeaderNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: profileData, isError } = useProfileData();
+  const { logout } = useAuth();
 
   if (isError) {
     toast({
@@ -87,15 +89,29 @@ const HeaderNavigation = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className='hidden sm:flex items-center'>
-              <div className='mr-2 text-right'>
-                <p className='text-sm font-medium'>{userName || 'Applicant User'}</p>
-                <p className='text-xs text-gray-500'>{userEmail || 'applicant@example.com'}</p>
-              </div>
-              <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600'>
-                <User size={20} />
-              </div>
-            </div>
+            <Popover>
+              <PopoverTrigger>
+                <div className='hidden sm:flex items-center'>
+                  <div className='mr-2 text-right'>
+                    <p className='text-sm font-medium'>{userName || 'Applicant User'}</p>
+                    <p className='text-xs text-gray-500'>{userEmail || 'applicant@example.com'}</p>
+                  </div>
+                  <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600'>
+                    <User size={20} />
+                  </div>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className='w-fit'>
+                <Button
+                  className='w-full flex items-center justify-center gap-2'
+                  variant='destructive'
+                  onClick={logout}
+                >
+                  <LogOut size={16} />
+                  Logout
+                </Button>
+              </PopoverContent>
+            </Popover>
 
             {/* Mobile Menu Button */}
             <div className='md:hidden ml-2 flex flex-row items-center justify-between'>
@@ -140,14 +156,24 @@ const HeaderNavigation = () => {
               </motion.div>
             ))}
 
-            <div className='pt-4 flex items-center'>
-              <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3'>
-                <User size={20} />
+            <div className='pt-4 flex flex-col gap-4'>
+              <div className='flex items-center'>
+                <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-3'>
+                  <User size={20} />
+                </div>
+                <div>
+                  <p className='text-sm font-medium'>{userName}</p>
+                  <p className='text-xs text-gray-500'>{userEmail}</p>
+                </div>
               </div>
-              <div>
-                <p className='text-sm font-medium'>{userName}</p>
-                <p className='text-xs text-gray-500'>{userEmail}</p>
-              </div>
+              <Button
+                className='w-full flex items-center justify-center gap-2'
+                variant='destructive'
+                onClick={logout}
+              >
+                <LogOut size={16} />
+                Logout
+              </Button>
             </div>
           </div>
         </Container>
