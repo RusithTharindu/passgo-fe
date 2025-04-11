@@ -8,10 +8,20 @@ import { User, Menu, X } from 'lucide-react';
 // import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
+import { useProfileData } from '@/hooks/useProfile';
+import { toast } from '@/hooks/use-toast';
 
 const HeaderNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  // const { user } = useAuth();
+  const { data: profileData, isError } = useProfileData();
+
+  if (isError) {
+    toast({
+      title: 'Error fetching profile data',
+      description: 'Please try again later',
+      variant: 'destructive',
+    });
+  }
 
   const navLinks = [
     { href: '/applicant/home', label: 'Home' },
@@ -25,6 +35,9 @@ const HeaderNavigation = () => {
     open: { opacity: 1, x: 0 },
     closed: { opacity: 0, x: '-100%' },
   };
+
+  const userName = profileData?.name;
+  const userEmail = profileData?.email;
 
   return (
     <header className='sticky top-0 z-50 bg-white shadow-sm'>
@@ -76,11 +89,8 @@ const HeaderNavigation = () => {
           >
             <div className='hidden sm:flex items-center'>
               <div className='mr-2 text-right'>
-                {/* TODO: Add user name and email */}
-                {/* <p className='text-sm font-medium'>{user?.name || 'Applicant User'}</p> */}
-                <p className='text-sm font-medium'>{'Applicant User'}</p>
-                {/* <p className='text-xs text-gray-500'>{user?.email || 'applicant@example.com'}</p> */}
-                <p className='text-xs text-gray-500'>{'applicant@example.com'}</p>
+                <p className='text-sm font-medium'>{userName || 'Applicant User'}</p>
+                <p className='text-xs text-gray-500'>{userEmail || 'applicant@example.com'}</p>
               </div>
               <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600'>
                 <User size={20} />
@@ -135,11 +145,8 @@ const HeaderNavigation = () => {
                 <User size={20} />
               </div>
               <div>
-                {/* TODO: Add user name and email */}
-                {/* <p className='text-sm font-medium'>{user?.name || 'Applicant User'}</p> */}
-                <p className='text-sm font-medium'>{'Applicant User'}</p>
-                {/* <p className='text-xs text-gray-500'>{user?.email || 'applicant@example.com'}</p> */}
-                <p className='text-xs text-gray-500'>{'applicant@example.com'}</p>
+                <p className='text-sm font-medium'>{userName}</p>
+                <p className='text-xs text-gray-500'>{userEmail}</p>
               </div>
             </div>
           </div>

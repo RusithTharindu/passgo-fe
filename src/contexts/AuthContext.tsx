@@ -1,8 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { tokenStorage } from '@/utils/helpers/cookieStorage';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -15,20 +16,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const router = useRouter();
+  const { setUserFromToken, clearUser } = useAuthStore();
 
-  // Check authentication status on mount and token changes
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = () => {
+  const checkAuthStatus = useCallback(() => {
     const hasToken = tokenStorage.hasToken();
     setIsAuthenticated(hasToken);
     return hasToken;
-  };
+  }, []);
+
+  // Check authentication status on mount and token changes
+  useEffect(() => {
+    const hasToken = checkAuthStatus();
+    if (hasToken) {
+      setUserFromToken();
+    }
+  }, [checkAuthStatus, setUserFromToken]);
 
   const logout = () => {
     tokenStorage.removeToken();
+    clearUser();
     setIsAuthenticated(false);
     router.push('/login');
   };
