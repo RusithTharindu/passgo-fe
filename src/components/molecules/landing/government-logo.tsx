@@ -13,7 +13,9 @@ export function GovernmentLogo() {
         />
       </div>
       <div>
-        <h1 className='text-lg font-bold'>Department of Immigration and Emigration of Sri Lanka</h1>
+        <h1 className='text-lg font-bold text-white'>
+          Department of Immigration and Emigration of Sri Lanka
+        </h1>
         <p className='text-xs text-white/80'>Passport Services</p>
       </div>
     </div>

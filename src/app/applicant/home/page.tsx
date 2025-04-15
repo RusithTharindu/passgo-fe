@@ -6,7 +6,7 @@ const ApplicantHome = () => {
   return (
     <div className='py-12'>
       <div className='text-center mb-12'>
-        <h1 className='text-3xl font-bold text-gray-900 mb-4'>PassGo Portal</h1>
+        <h1>PassGo Portal</h1>
         <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
           We facilitate Sri Lankan citizens to apply passports through online comfortably at their
           fingertips.
