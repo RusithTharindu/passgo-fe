@@ -1,6 +1,9 @@
 'use client';
 
-import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import {
   Table,
@@ -25,13 +28,13 @@ export function DataTable({ data }: DataTableProps) {
   });
 
   return (
-    <div className='rounded-md border border-gray-800 bg-gray-900/50'>
+    <div className='rounded-md border border-gray-200'>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map(headerGroup => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className='bg-gray-50 hover:bg-gray-100'>
               {headerGroup.headers.map(header => (
-                <TableHead key={header.id}>
+                <TableHead key={header.id} className='text-gray-700'>
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -43,9 +46,9 @@ export function DataTable({ data }: DataTableProps) {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map(row => (
-              <TableRow key={row.id}>
+              <TableRow key={row.id} className='hover:bg-gray-50'>
                 {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className='text-gray-900'>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -53,7 +56,7 @@ export function DataTable({ data }: DataTableProps) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className='h-24 text-center'>
+              <TableCell colSpan={columns.length} className='h-24 text-center text-gray-500'>
                 No results.
               </TableCell>
             </TableRow>
