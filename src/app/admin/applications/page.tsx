@@ -10,8 +10,8 @@ export default function ApplicationsPage() {
 
   return (
     <div className='space-y-4'>
-      <h1 className='text-2xl font-bold text-gray-900'>Passport Applications</h1>
-      <div className='rounded-lg border border-gray-200 bg-white p-4 shadow-sm'>
+      <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>Passport Applications</h1>
+      <div className='rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm'>
         {isLoading ? (
           <p className='text-center text-gray-500'>Loading...</p>
         ) : (

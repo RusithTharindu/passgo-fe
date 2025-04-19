@@ -5,6 +5,7 @@ import { GovernmentLogo } from './government-logo';
 import Cookies from 'js-cookie';
 import { decode, JwtPayload } from 'jsonwebtoken';
 import { useRouter } from 'next/navigation';
+import passgoLogo from '../../../../public/assets/logo/passgo-logo.png';
 
 export function HeroSection() {
   const router = useRouter();
@@ -35,8 +36,11 @@ export function HeroSection() {
           <div className='flex flex-col justify-center space-y-4 text-center lg:text-left'>
             <div className='space-y-2 mx-auto lg:mx-0 max-w-xl'>
               <h2 className='text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl text-white'>
-                Sri Lanka Passport Application Portal
+                PassGo
               </h2>
+              <h3 className='text-xl font-bold tracking-tighter sm:text-xl md:text-2xl lg:text-3xl text-white'>
+                Sri Lanka Passport Application Portal
+              </h3>
               <p className='text-white/80 md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed'>
                 Apply for, renew, or check the status of your Sri Lankan passport through our secure
                 online portal.
@@ -58,7 +62,7 @@ export function HeroSection() {
           </div>
           <div className='flex items-center justify-center mt-6 lg:mt-0'>
             <Image
-              src='/favicon.ico'
+              src={passgoLogo}
               width={1000}
               height={400}
               alt=''
