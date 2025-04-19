@@ -3,6 +3,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { ArrowUpDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export type ApplicationStatus =
   | 'pending'
@@ -54,7 +56,17 @@ export const columns: ColumnDef<Application>[] = [
   },
   {
     accessorKey: 'typeOfService',
-    header: 'Type of Service',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Type of Service
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const value = row.getValue('typeOfService') as string;
       return (
@@ -72,7 +84,17 @@ export const columns: ColumnDef<Application>[] = [
   },
   {
     accessorKey: 'TypeofTravelDocument',
-    header: 'Type of Travel Document',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Type of Travel Document
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const value = row.getValue('TypeofTravelDocument') as Application['TypeofTravelDocument'];
 
@@ -95,7 +117,17 @@ export const columns: ColumnDef<Application>[] = [
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Status
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const value = row.getValue('status') as ApplicationStatus;
 
