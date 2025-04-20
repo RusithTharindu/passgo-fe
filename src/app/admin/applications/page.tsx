@@ -2,12 +2,13 @@
 
 import { DataTable } from './data-table';
 import { useGetApplications } from '@/hooks/useApplication';
+import { Application } from '@/types/applicationTypes';
 
 export default function ApplicationsPage() {
   const { data: applications, isLoading } = useGetApplications();
 
   // Add createdAt field to the mock data
-  const applicationsWithDate = applications?.map(app => ({
+  const applicationsWithDate = applications?.map((app: Application) => ({
     ...app,
     createdAt: app.createdAt || new Date().toISOString(), // Fallback to current date if not provided
   }));

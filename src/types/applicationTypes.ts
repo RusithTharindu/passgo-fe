@@ -25,6 +25,34 @@ export enum CollectionLocation {
   REGIONAL_OFFICE = 'Regional Office',
 }
 
+export enum SriLankaDistrict {
+  AMPARA = 'Ampara',
+  ANURADHAPURA = 'Anuradhapura',
+  BADULLA = 'Badulla',
+  BATTICALOA = 'Batticaloa',
+  COLOMBO = 'Colombo',
+  GALLE = 'Galle',
+  GAMPAHA = 'Gampaha',
+  HAMBANTOTA = 'Hambantota',
+  JAFFNA = 'Jaffna',
+  KALUTARA = 'Kalutara',
+  KANDY = 'Kandy',
+  KEGALLE = 'Kegalle',
+  KILINOCHCHI = 'Kilinochchi',
+  KURUNEGALA = 'Kurunegala',
+  MANNAR = 'Mannar',
+  MATALE = 'Matale',
+  MATARA = 'Matara',
+  MONARAGALA = 'Monaragala',
+  MULLAITIVU = 'Mullaitivu',
+  NUWARA_ELIYA = 'Nuwara Eliya',
+  POLONNARUWA = 'Polonnaruwa',
+  PUTTALAM = 'Puttalam',
+  RATNAPURA = 'Ratnapura',
+  TRINCOMALEE = 'Trincomalee',
+  VAVUNIYA = 'Vavuniya',
+}
+
 export type DocumentVerification = {
   documentType: 'birth_certificate' | 'nic';
   verified: boolean;
@@ -47,10 +75,10 @@ export interface Application {
   surname: string;
   otherNames: string;
   permanentAddress: string;
-  permenantAddressDistrict: string;
+  permenantAddressDistrict: SriLankaDistrict;
   birthdate: string;
   birthCertificateNumber: string;
-  birthCertificateDistrict: string;
+  birthCertificateDistrict: SriLankaDistrict;
   placeOfBirth: string;
   sex: 'male' | 'female';
   profession: string;
