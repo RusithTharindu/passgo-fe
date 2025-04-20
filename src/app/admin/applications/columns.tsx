@@ -5,6 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+// import { Calendar } from '@/components/ui/calendar';
+// import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+// import { CalendarIcon } from 'lucide-react';
 
 export type ApplicationStatus =
   | 'pending'
@@ -26,6 +30,7 @@ export type Application = {
   TypeofTravelDocument: 'all' | 'middleEast' | 'emergencyCertificate' | 'identityCertificate';
   submittedBy: string;
   status: ApplicationStatus;
+  createdAt: string; // ISO date string
 };
 
 type TravelDocumentStyles = {
@@ -154,5 +159,22 @@ export const columns: ColumnDef<Application>[] = [
   {
     accessorKey: 'submittedBy',
     header: 'Submitted By',
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Created Date',
+    cell: ({ row }) => {
+      return format(new Date(row.getValue('createdAt')), 'PPP');
+    },
+    filterFn: (row, id, value) => {
+      if (!value) return true;
+      const rowDate = new Date(row.getValue(id));
+      const filterDate = new Date(value);
+      return (
+        rowDate.getFullYear() === filterDate.getFullYear() &&
+        rowDate.getMonth() === filterDate.getMonth() &&
+        rowDate.getDate() === filterDate.getDate()
+      );
+    },
   },
 ];

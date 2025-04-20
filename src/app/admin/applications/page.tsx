@@ -6,7 +6,11 @@ import { useGetApplications } from '@/hooks/useApplication';
 export default function ApplicationsPage() {
   const { data: applications, isLoading } = useGetApplications();
 
-  console.log(applications);
+  // Add createdAt field to the mock data
+  const applicationsWithDate = applications?.map(app => ({
+    ...app,
+    createdAt: app.createdAt || new Date().toISOString(), // Fallback to current date if not provided
+  }));
 
   return (
     <div className='space-y-4'>
@@ -15,7 +19,7 @@ export default function ApplicationsPage() {
         {isLoading ? (
           <p className='text-center text-gray-500'>Loading...</p>
         ) : (
-          <DataTable data={applications || []} />
+          <DataTable data={applicationsWithDate || []} />
         )}
       </div>
     </div>

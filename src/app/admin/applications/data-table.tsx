@@ -35,6 +35,11 @@ import {
 } from '@/components/ui/select';
 import { useState } from 'react';
 import { Application, columns } from './columns';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface DataTableProps {
   data: Application[];
@@ -43,6 +48,7 @@ interface DataTableProps {
 export function DataTable({ data }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
@@ -54,31 +60,40 @@ export function DataTable({ data }: DataTableProps) {
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
     state: {
       sorting,
       columnFilters,
       globalFilter,
     },
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, _columnId, filterValue) => {
+      const searchValue = filterValue.toLowerCase();
+      const surname = ((row.getValue('surname') as string) || '').toLowerCase();
+      const otherNames = ((row.getValue('otherNames') as string) || '').toLowerCase();
+
+      return surname.includes(searchValue) || otherNames.includes(searchValue);
+    },
   });
+
+  const handleFilterChange = (value: string, columnId: string) => {
+    table.getColumn(columnId)?.setFilterValue(value === 'all' ? undefined : value);
+  };
 
   return (
     <div className='space-y-4'>
       <div className='flex items-center gap-4'>
         <Input
-          placeholder='Search all columns...'
+          placeholder='Search by name...'
           value={globalFilter ?? ''}
           onChange={event => setGlobalFilter(event.target.value)}
           className='max-w-sm'
         />
         <Select
           value={(table.getColumn('typeOfService')?.getFilterValue() as string) ?? 'all'}
-          onValueChange={value =>
-            table.getColumn('typeOfService')?.setFilterValue(value === 'all' ? '' : value)
-          }
+          onValueChange={value => handleFilterChange(value, 'typeOfService')}
         >
           <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Service Type' />
+            <SelectValue placeholder='All Services' />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='all'>All Services</SelectItem>
@@ -88,16 +103,13 @@ export function DataTable({ data }: DataTableProps) {
         </Select>
         <Select
           value={(table.getColumn('TypeofTravelDocument')?.getFilterValue() as string) ?? 'all'}
-          onValueChange={value =>
-            table.getColumn('TypeofTravelDocument')?.setFilterValue(value === 'all' ? '' : value)
-          }
+          onValueChange={value => handleFilterChange(value, 'TypeofTravelDocument')}
         >
           <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Document Type' />
+            <SelectValue placeholder='All Documents' />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='all'>All Documents</SelectItem>
-            <SelectItem value='all'>All</SelectItem>
             <SelectItem value='middleEast'>Middle East</SelectItem>
             <SelectItem value='emergencyCertificate'>Emergency Certificate</SelectItem>
             <SelectItem value='identityCertificate'>Identity Certificate</SelectItem>
@@ -105,12 +117,10 @@ export function DataTable({ data }: DataTableProps) {
         </Select>
         <Select
           value={(table.getColumn('status')?.getFilterValue() as string) ?? 'all'}
-          onValueChange={value =>
-            table.getColumn('status')?.setFilterValue(value === 'all' ? '' : value)
-          }
+          onValueChange={value => handleFilterChange(value, 'status')}
         >
           <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Status' />
+            <SelectValue placeholder='All Status' />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='all'>All Status</SelectItem>
@@ -125,6 +135,42 @@ export function DataTable({ data }: DataTableProps) {
             <SelectItem value='cancelled'>Cancelled</SelectItem>
           </SelectContent>
         </Select>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={'outline'}
+              className={cn(
+                'w-[200px] justify-start text-left font-normal',
+                !selectedDate && 'text-muted-foreground',
+              )}
+            >
+              <CalendarIcon className='mr-2 h-4 w-4' />
+              {selectedDate ? format(selectedDate, 'PPP') : 'Filter by date'}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className='w-auto p-0' align='start'>
+            <Calendar
+              mode='single'
+              selected={selectedDate}
+              onSelect={date => {
+                setSelectedDate(date);
+                table.getColumn('createdAt')?.setFilterValue(date?.toISOString());
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+        {selectedDate && (
+          <Button
+            variant='ghost'
+            onClick={() => {
+              setSelectedDate(undefined);
+              table.getColumn('createdAt')?.setFilterValue(undefined);
+            }}
+          >
+            Reset Date
+          </Button>
+        )}
       </div>
 
       <div className='rounded-md border'>
