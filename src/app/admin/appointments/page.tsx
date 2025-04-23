@@ -4,10 +4,18 @@ import { useRouter } from 'next/navigation';
 import { DataTable } from './data-table';
 import { useAppointments } from '@/hooks/useAppointments';
 import { Loader2 } from 'lucide-react';
+import { Appointment } from '@/types/appointmentTypes';
 
 export default function AppointmentsPage() {
   const router = useRouter();
   const { data: appointments, isLoading } = useAppointments();
+
+  console.log('Appointments data:', appointments);
+
+  // Handle both array and paginated response types
+  const appointmentItems: Appointment[] = Array.isArray(appointments)
+    ? appointments
+    : (appointments?.items ?? []);
 
   return (
     <div className='space-y-6'>
@@ -22,7 +30,7 @@ export default function AppointmentsPage() {
           </div>
         ) : (
           <DataTable
-            data={appointments ?? []}
+            data={appointmentItems}
             onRowClick={appointment => router.push(`/admin/appointments/${appointment.id}`)}
           />
         )}
