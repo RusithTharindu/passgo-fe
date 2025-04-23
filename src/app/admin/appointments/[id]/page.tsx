@@ -40,7 +40,7 @@ export default function AppointmentDetailsPage() {
     };
 
     updateAppointment(
-      { id: params.id as string, data: data as UpdateAppointmentAdminPayload },
+      { id: params.id as string, data },
       {
         onSuccess: () => {
           toast({
@@ -143,6 +143,18 @@ export default function AppointmentDetailsPage() {
               <p className='text-sm text-muted-foreground'>Reason for Appointment</p>
               <p className='font-medium'>{appointment.reason}</p>
             </div>
+            {appointment.adminNotes && (
+              <div>
+                <p className='text-sm text-muted-foreground'>Admin Notes</p>
+                <p className='font-medium'>{appointment.adminNotes}</p>
+              </div>
+            )}
+            {appointment.status === AppointmentStatus.REJECTED && appointment.rejectionReason && (
+              <div>
+                <p className='text-sm text-muted-foreground'>Rejection Reason</p>
+                <p className='font-medium text-red-500'>{appointment.rejectionReason}</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 

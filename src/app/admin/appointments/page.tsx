@@ -22,7 +22,7 @@ export default function AppointmentsPage() {
           </div>
         ) : (
           <DataTable
-            data={appointments}
+            data={appointments ?? []}
             onRowClick={appointment => router.push(`/admin/appointments/${appointment.id}`)}
           />
         )}

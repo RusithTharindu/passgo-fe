@@ -53,9 +53,7 @@ export const useUpdateAppointment = (isAdmin: boolean = false) => {
       data,
     }: {
       id: string;
-      data: typeof isAdmin extends true
-        ? UpdateAppointmentAdminPayload
-        : UpdateAppointmentApplicantPayload;
+      data: UpdateAppointmentAdminPayload | UpdateAppointmentApplicantPayload;
     }) =>
       isAdmin
         ? appointmentApi.updateAsAdmin(id, data as UpdateAppointmentAdminPayload)
