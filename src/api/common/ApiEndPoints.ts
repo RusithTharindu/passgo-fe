@@ -6,3 +6,7 @@ export const authEndpoints = {
 export const profileEndpoints = {
   getProfile: `${process.env.NEXT_PUBLIC_API_URL}user/find`,
 };
+
+export const applicationEndpoints = {
+  application: `${process.env.NEXT_PUBLIC_API_URL}application`,
+};
