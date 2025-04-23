@@ -13,6 +13,8 @@ export default function ApplicationsPage() {
     createdAt: app.createdAt || new Date().toISOString(), // Fallback to current date if not provided
   }));
 
+  console.log(applicationsWithDate);
+
   return (
     <div className='space-y-4'>
       <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>Passport Applications</h1>
@@ -20,7 +22,7 @@ export default function ApplicationsPage() {
         {isLoading ? (
           <p className='text-center text-gray-500'>Loading...</p>
         ) : (
-          <DataTable data={applicationsWithDate || []} />
+          <DataTable data={applications} />
         )}
       </div>
     </div>
