@@ -34,6 +34,8 @@ import { createAppointmentSchema } from '@/utils/validation/AppointmentSchema';
 import { useCreateAppointment, useAvailableSlots } from '@/hooks/useAppointments';
 import { AppointmentLocation, Appointment } from '@/types/appointmentTypes';
 import { AppointmentConfirmationModal } from '../modals/appointment-confirmation-modal';
+import { useUserDetails } from '@/store/useUserStore';
+import axios from 'axios';
 
 type FormData = z.infer<typeof createAppointmentSchema>;
 
@@ -42,6 +44,7 @@ export function CreateAppointmentForm() {
   const { toast } = useToast();
   const [createdAppointment, setCreatedAppointment] = useState<Appointment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const userDetails = useUserDetails();
 
   const form = useForm<FormData>({
     resolver: zodResolver(createAppointmentSchema),
@@ -70,14 +73,21 @@ export function CreateAppointmentForm() {
     selectedLocation as AppointmentLocation,
   );
 
-  //   const formattedTimeSlots = availableSlots.map(slot => {
-  //     try {
-  //       const parsedTime = parse(slot, 'HH:mm', new Date());
-  //       return format(parsedTime, 'HH:mm');
-  //     } catch {
-  //       return slot;
-  //     }
-  //   });
+  async function sendAppointmentEmail(appointment: Appointment) {
+    try {
+      if (!userDetails?.email) {
+        console.error('No user email found');
+        return;
+      }
+
+      await axios.post('/api/appointment/send', {
+        appointment,
+        recipientEmail: userDetails.email,
+      });
+    } catch (error) {
+      console.error('Failed to send appointment email:', error);
+    }
+  }
 
   function onSubmit(data: FormData) {
     const formattedDate = format(new Date(data.preferredDate), 'yyyy-MM-dd');
@@ -88,10 +98,15 @@ export function CreateAppointmentForm() {
         preferredDate: formattedDate,
       },
       {
-        onSuccess: response => {
+        onSuccess: async response => {
           setCreatedAppointment(response);
+          await sendAppointmentEmail(response);
           setIsModalOpen(true);
           form.reset();
+          toast({
+            title: 'Success',
+            description: 'Appointment created successfully. Check your email for details.',
+          });
         },
         onError: error => {
           toast({

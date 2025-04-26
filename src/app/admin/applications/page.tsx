@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { DataTable } from './data-table';
 import { useGetApplications } from '@/hooks/useApplication';
 import { Application } from '@/types/applicationTypes';
@@ -12,8 +14,6 @@ export default function ApplicationsPage() {
     ...app,
     createdAt: app.createdAt || new Date().toISOString(), // Fallback to current date if not provided
   }));
-
-  console.log(applicationsWithDate);
 
   return (
     <div className='space-y-4'>

@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useParams, useRouter } from 'next/navigation';
 import { useAppointment, useUpdateAppointment } from '@/hooks/useAppointments';
 import { AppointmentStatus, UpdateAppointmentAdminPayload } from '@/types/appointmentTypes';
@@ -18,6 +20,7 @@ import { Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import axios from 'axios';
 
 export default function AppointmentDetailsPage() {
   const params = useParams();
@@ -29,6 +32,25 @@ export default function AppointmentDetailsPage() {
 
   const { data: appointment, isLoading } = useAppointment(params.id as string);
   const { mutate: updateAppointment, isPending: isUpdating } = useUpdateAppointment(true);
+
+  async function sendStatusUpdateEmail(updatedAppointment: any) {
+    try {
+      if (!updatedAppointment.createdBy?.email) {
+        console.error('No user email found in appointment');
+        return;
+      }
+
+      await axios.post('/api/appointment/send', {
+        appointment: updatedAppointment,
+        recipientEmail: updatedAppointment.createdBy.email,
+      });
+
+      console.log('Status update email sent successfully');
+    } catch (error) {
+      console.error('Failed to send status update email:', error);
+      // Don't throw error - we don't want to break the flow if email fails
+    }
+  }
 
   const handleUpdateStatus = () => {
     if (!status) return;
@@ -42,7 +64,10 @@ export default function AppointmentDetailsPage() {
     updateAppointment(
       { id: params.id as string, data },
       {
-        onSuccess: () => {
+        onSuccess: async updatedAppointment => {
+          // Send email notification
+          await sendStatusUpdateEmail(updatedAppointment);
+
           toast({
             title: 'Success',
             description: 'Appointment status updated successfully',

@@ -52,16 +52,19 @@ const SignUpForm = () => {
         onSuccess: async () => {
           try {
             // Send welcome email using the API route with full URL
-            const response = await fetch(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/send`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
+            const response = await fetch(
+              `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/signup/send`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  to: data.email,
+                  name: `${data.firstName} ${data.lastName}`,
+                }),
               },
-              body: JSON.stringify({
-                to: data.email,
-                name: `${data.firstName} ${data.lastName}`,
-              }),
-            });
+            );
 
             const result = await response.json();
 
