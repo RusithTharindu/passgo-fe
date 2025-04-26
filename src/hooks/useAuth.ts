@@ -33,7 +33,12 @@ export const useSignUp = () => {
     mutationKey: authQueryKeys.signup,
     mutationFn: async (data: SignUpRequest) => await signUpApi(data),
     onError: error => {
-      console.error(error);
+      toast({
+        title: 'Error creating account',
+        description:
+          error instanceof Error ? error.message : 'Something went wrong. Please try again.',
+        variant: 'destructive',
+      });
     },
   });
 };

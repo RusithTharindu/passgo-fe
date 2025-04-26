@@ -5,7 +5,7 @@ import { GovernmentLogo } from './government-logo';
 import Cookies from 'js-cookie';
 import { decode, JwtPayload } from 'jsonwebtoken';
 import { useRouter } from 'next/navigation';
-import passgoLogo from '../../../../public/assets/logo/passgo-logo.png';
+import coverImage from '../../../../public/assets/images/applicant-home/cover-img2.jpg';
 
 export function HeroSection() {
   const router = useRouter();
@@ -62,7 +62,7 @@ export function HeroSection() {
           </div>
           <div className='flex items-center justify-center mt-6 lg:mt-0'>
             <Image
-              src={passgoLogo}
+              src={coverImage}
               width={1000}
               height={400}
               alt=''
