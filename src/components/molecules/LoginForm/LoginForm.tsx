@@ -11,6 +11,7 @@ import { useLogin } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { decode, JwtPayload } from 'jsonwebtoken';
 import Cookies from 'js-cookie';
+import { useUserStore } from '@/store/useUserStore';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,6 +31,7 @@ const LoginForm = () => {
       password: '',
     },
   });
+  const { setUserDetails } = useUserStore();
 
   const onSubmit = (data: LoginFormValues) => {
     // Call login mutation with form data
@@ -40,6 +42,7 @@ const LoginForm = () => {
       },
       {
         onSuccess: () => {
+          setUserDetails(data.email);
           const accessToken = Cookies.get('token');
           if (accessToken) {
             const decodedToken = decode(accessToken) as JwtPayload;

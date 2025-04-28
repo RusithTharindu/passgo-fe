@@ -37,7 +37,7 @@ const SignUpForm = () => {
     },
   });
 
-  const onSubmit = (data: SignUpFormValues) => {
+  const onSubmit = async (data: SignUpFormValues) => {
     signUp(
       {
         firstName: data.firstName,
@@ -49,12 +49,50 @@ const SignUpForm = () => {
         role: 'applicant',
       },
       {
-        onSuccess: () => {
-          toast({
-            title: 'Success',
-            description: 'Account created successfully. Please login.',
-          });
-          router.push('/login');
+        onSuccess: async () => {
+          try {
+            // Send welcome email using the API route with full URL
+            const response = await fetch(
+              `${process.env.NEXT_PUBLIC_FRONTEND_URL}/api/signup/send`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  to: data.email,
+                  name: `${data.firstName} ${data.lastName}`,
+                }),
+              },
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+              console.error('Failed to send welcome email:', result.error);
+              throw new Error(result.error || 'Failed to send welcome email');
+            }
+
+            toast({
+              title: 'Success',
+              description: 'Account created successfully. Please check your email and login.',
+            });
+            router.push('/login');
+          } catch (error) {
+            // Still proceed with signup even if email fails
+            console.error('Error sending welcome email:', error);
+            toast({
+              title: 'Success',
+              description: 'Account created successfully. Please login.',
+              variant: 'default',
+            });
+            toast({
+              title: 'Warning',
+              description: 'Could not send welcome email. Please contact support if needed.',
+              variant: 'destructive',
+            });
+            router.push('/login');
+          }
         },
         onError: error => {
           toast({

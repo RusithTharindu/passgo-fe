@@ -1,5 +1,7 @@
 'use client';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { DataTable } from './data-table';
 import { useGetApplications } from '@/hooks/useApplication';
 import { Application } from '@/types/applicationTypes';
@@ -20,7 +22,7 @@ export default function ApplicationsPage() {
         {isLoading ? (
           <p className='text-center text-gray-500'>Loading...</p>
         ) : (
-          <DataTable data={applicationsWithDate || []} />
+          <DataTable data={applications} />
         )}
       </div>
     </div>
