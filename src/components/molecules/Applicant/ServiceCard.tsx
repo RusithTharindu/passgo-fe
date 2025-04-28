@@ -32,10 +32,8 @@ const ServiceCard = ({
           <div className='w-full md:w-1/2'>
             <Card className='border-0 shadow-none'>
               <CardContent className='p-6'>
-                <h2 className='text-2xl font-bold text-gray-900 mb-4 group-hover:text-[#3B82F6]'>
-                  {title}
-                </h2>
-                <p className='text-gray-600 mb-6'>{description}</p>
+                <h2 className='group-hover:text-[#3B82F6]'>{title}</h2>
+                <p className='mb-6'>{description}</p>
                 <Button asChild>
                   <Link href={link}>{linkText}</Link>
                 </Button>
@@ -51,7 +49,7 @@ const ServiceCard = ({
                 <h2 className='text-2xl font-bold text-gray-900 mb-4 group-hover:text-[#3B82F6]'>
                   {title}
                 </h2>
-                <p className='text-gray-600 mb-6'>{description}</p>
+                <p className='mb-6'>{description}</p>
                 <Button asChild>
                   <Link href={link}>{linkText}</Link>
                 </Button>
