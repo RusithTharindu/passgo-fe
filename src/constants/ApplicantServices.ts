@@ -39,7 +39,7 @@ export const ApplicantServices: ServiceCardType[] = [
     description:
       'Renew your passport before it expires. Our simplified renewal process makes it easy to update your travel documents.',
     image: '/assets/images/applicant-home/img-4.webp',
-    link: '/applicant/passport/renewal',
+    link: '/applicant/passport-renewal',
     imagePosition: 'left',
     linkText: 'Renew Passport',
   },

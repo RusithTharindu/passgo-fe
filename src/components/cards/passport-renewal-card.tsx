@@ -1,65 +1,77 @@
-// import { format } from 'date-fns';
-// import { Badge } from '@/components/ui/badge';
-// import { Card, CardContent, CardHeader } from '@/components/ui/card';
-// import { PassportRenewal, RenewalStatus } from '@/types/passportTypes';
-// import { Passport, Calendar, AlertCircle } from 'lucide-react';
+'use client';
 
-// interface PassportRenewalCardProps {
-//   renewal: PassportRenewal;
-// }
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
 
-// function getStatusColor(status: RenewalStatus): string {
-//   switch (status) {
-//     case RenewalStatus.APPROVED:
-//       return 'bg-green-500/10 text-green-500';
-//     case RenewalStatus.REJECTED:
-//       return 'bg-red-500/10 text-red-500';
-//     case RenewalStatus.PENDING:
-//       return 'bg-yellow-500/10 text-yellow-500';
-//     case RenewalStatus.PROCESSING:
-//       return 'bg-blue-500/10 text-blue-500';
-//     default:
-//       return 'bg-gray-500/10 text-gray-500';
-//   }
-// }
+import { format } from 'date-fns';
+import { ArrowRight } from 'lucide-react';
+import { RenewPassportResponse } from '@/types/passportRenewalTypes';
+import { StatusBadge } from '@/components/molecules/status-badge';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-// export function PassportRenewalCard({ renewal }: PassportRenewalCardProps) {
-//   return (
-//     <Card className='hover:shadow-lg transition-shadow'>
-//       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-//         <div className='font-semibold'>#{renewal.renewalId}</div>
-//         <Badge className={getStatusColor(renewal.status)}>
-//           {renewal.status.charAt(0).toUpperCase() + renewal.status.slice(1).toLowerCase()}
-//         </Badge>
-//       </CardHeader>
-//       <CardContent className='space-y-3'>
-//         <div className='flex items-center space-x-2 text-sm'>
-//           <Passport className='h-4 w-4 opacity-70' />
-//           <span>Passport Number: {renewal.passportNumber}</span>
-//         </div>
-//         <div className='flex items-center space-x-2 text-sm'>
-//           <Calendar className='h-4 w-4 opacity-70' />
-//           <span>Submitted on {format(new Date(renewal.submissionDate), 'PPP')}</span>
-//         </div>
-//         {renewal.expiryDate && (
-//           <div className='flex items-center space-x-2 text-sm'>
-//             <AlertCircle className='h-4 w-4 opacity-70' />
-//             <span>Expires on {format(new Date(renewal.expiryDate), 'PPP')}</span>
-//           </div>
-//         )}
-//         {renewal.processingNotes && (
-//           <div className='mt-2 text-sm text-muted-foreground'>
-//             <p className='font-medium'>Processing Notes:</p>
-//             <p>{renewal.processingNotes}</p>
-//           </div>
-//         )}
-//         {renewal.status === RenewalStatus.REJECTED && renewal.rejectionReason && (
-//           <div className='mt-2 text-sm text-red-500'>
-//             <p className='font-medium'>Rejection Reason:</p>
-//             <p>{renewal.rejectionReason}</p>
-//           </div>
-//         )}
-//       </CardContent>
-//     </Card>
-//   );
-// }
+interface PassportRenewalCardProps {
+  renewal: RenewPassportResponse;
+}
+
+export function PassportRenewalCard({ renewal }: PassportRenewalCardProps) {
+  const createdDate = new Date(renewal.createdAt);
+
+  // Calculate completeness percentage based on document uploads
+  const requiredDocuments = 5; // 5 required documents, 1 optional
+  const uploadedDocuments = Object.values(renewal.documents).filter(Boolean).length;
+  const completionPercentage = Math.min(
+    Math.round((uploadedDocuments / requiredDocuments) * 100),
+    100,
+  );
+
+  // Determine if documents are complete
+  const isDocumentsComplete = completionPercentage === 100;
+
+  return (
+    <div className='border rounded-lg overflow-hidden shadow-sm transition-shadow hover:shadow-md'>
+      <div className='flex justify-between items-center p-4 border-b'>
+        <div>
+          <h3 className='font-medium'>{renewal.fullName}</h3>
+          <p className='text-sm text-muted-foreground'>Passport: {renewal.currentPassportNumber}</p>
+        </div>
+        <StatusBadge status={renewal.status} />
+      </div>
+
+      <div className='p-4 space-y-4'>
+        <div className='grid grid-cols-2 gap-4 text-sm'>
+          <div>
+            <p className='text-muted-foreground'>Created On</p>
+            <p>{format(createdDate, 'PPP')}</p>
+          </div>
+          <div>
+            <p className='text-muted-foreground'>Documents</p>
+            <div className='flex items-center gap-2'>
+              <div className='h-2 w-full bg-gray-100 rounded-full overflow-hidden'>
+                <div className='h-full bg-primary' style={{ width: `${completionPercentage}%` }} />
+              </div>
+              <span className='text-xs'>{completionPercentage}%</span>
+            </div>
+          </div>
+        </div>
+
+        {renewal.status === 'REJECTED' && renewal.adminRemarks && (
+          <div className='bg-red-50 p-3 rounded text-sm border border-red-100'>
+            <p className='font-medium text-red-700'>Rejection Reason:</p>
+            <p className='text-red-600'>{renewal.adminRemarks}</p>
+          </div>
+        )}
+
+        <div className='flex justify-end pt-2'>
+          <Button size='sm' asChild>
+            <Link href={`/applicant/passport-renewal/${renewal._id}`}>
+              View Details
+              <ArrowRight className='ml-2 h-4 w-4' />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
