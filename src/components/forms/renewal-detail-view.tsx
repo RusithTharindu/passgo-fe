@@ -36,7 +36,6 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
   const expiryDate = new Date(renewal.currentPassportExpiryDate);
   const createdDate = new Date(renewal.createdAt);
   const updatedDate = new Date(renewal.updatedAt);
-  const verifiedDate = renewal.verifiedAt ? new Date(renewal.verifiedAt) : null;
 
   // Calculate document completeness
   const requiredDocuments = 5; // 5 required, 1 optional
@@ -218,7 +217,7 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
                     </div>
                     <div>
                       <p className='text-sm text-muted-foreground'>Last Updated</p>
-                      <p className='font-medium'>{format(updatedDate, 'PPP')}</p>
+                      <p className='font-medium'>{format(updatedDate, 'PPP pp')}</p>
                     </div>
                   </div>
 
@@ -241,11 +240,11 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
                         <CheckCircle2 className='h-4 w-4 text-green-500 mt-0.5 mr-2' />
                         <div>
                           <p className='font-medium text-green-700'>
-                            Verified on {verifiedDate ? format(verifiedDate, 'PPP') : 'N/A'}
+                            Verified on {format(updatedDate, 'PPP pp')}
                           </p>
-                          {renewal.verifiedBy && (
-                            <p className='text-green-600'>By: {renewal.verifiedBy}</p>
-                          )}
+                          <p className='text-green-600'>
+                            By: {renewal.userId.firstName} {renewal.userId.lastName}
+                          </p>
                         </div>
                       </div>
                     </div>

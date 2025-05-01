@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { RenewPassportResponse, PassportDocumentType } from '@/types/passportRenewalTypes';
+import { RenewPassportResponse, RenewPassportStatus } from '@/types/passportRenewalTypes';
 import { format } from 'date-fns';
 
 const transporter = nodemailer.createTransport({
@@ -11,127 +11,131 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+function getStatusColor(status: RenewPassportStatus): string {
+  switch (status) {
+    case RenewPassportStatus.VERIFIED:
+      return '#4CAF50';
+    case RenewPassportStatus.PENDING:
+      return '#FFC107';
+    case RenewPassportStatus.REJECTED:
+      return '#F44336';
+    case RenewPassportStatus.READY_TO_COLLECT:
+      return '#2196F3';
+    default:
+      return '#000000';
+  }
+}
+
+function generateCollectionInstructions() {
+  return `
+    <div style="background-color: #e8f5e9; padding: 20px; border-radius: 5px; margin: 20px 0; border: 2px solid #4CAF50;">
+      <h3 style="margin-top: 0; color: #2E7D32;">Important Collection Instructions</h3>
+      <p style="margin: 10px 0;"><strong>Please bring the following documents when collecting your passport:</strong></p>
+      <ul style="margin: 10px 0; padding-left: 20px;">
+        <li><strong>Original copies of all submitted documents</strong></li>
+        <li><strong>Photocopies of all submitted documents</strong></li>
+      </ul>
+      <p style="margin: 10px 0;"><strong>Additional Requirements for Name Changes:</strong></p>
+      <p style="margin: 10px 0; color: #1B5E20;">
+        <strong>If you have changed your name after marriage, you must also bring:</strong>
+      </p>
+      <ul style="margin: 10px 0; padding-left: 20px;">
+        <li><strong>Original marriage certificate</strong></li>
+        <li><strong>Photocopy of marriage certificate</strong></li>
+      </ul>
+      <p style="margin: 10px 0; color: #B71C1C;">
+        <strong>Note: All documents will be reviewed at the time of collection.</strong>
+      </p>
+    </div>
+  `;
+}
+
 function generateRenewalEmailHtml(renewal: RenewPassportResponse) {
-  const formattedDOB = format(new Date(renewal.dateOfBirth), 'MMMM do, yyyy');
-  const formattedExpiry = format(new Date(renewal.currentPassportExpiryDate), 'MMMM do, yyyy');
+  const formattedDate = format(new Date(renewal.createdAt), 'MMMM do, yyyy');
+  const statusUpdateTime = format(new Date(renewal.updatedAt), 'MMMM do, yyyy hh:mm aa');
+  const statusColor = getStatusColor(renewal.status);
 
   return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>Passport Renewal Application Submitted</h2>
-      <p>Dear ${renewal.fullName},</p>
-      <p>Your passport renewal application has been successfully submitted. Here are your application details:</p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #333; text-align: center; margin-bottom: 30px;">
+        Passport Renewal Request Update
+      </h2>
 
-      <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
-        <h3 style="margin-top: 0;">Application Information</h3>
-        <table style="width: 100%; border-collapse: collapse;">
-          <tr>
-            <td style="padding: 8px 0;"><strong>Application ID:</strong></td>
-            <td>${renewal._id}</td>
-          </tr>
-          <tr>
-            <td style="padding: 8px 0;"><strong>Status:</strong></td>
-            <td><span style="font-weight: bold;">${renewal.status.toUpperCase()}</span></td>
-          </tr>
-          <tr>
-            <td style="padding: 8px 0;"><strong>Current Passport Number:</strong></td>
-            <td>${renewal.currentPassportNumber}</td>
-          </tr>
-          <tr>
-            <td style="padding: 8px 0;"><strong>Current Passport Expiry:</strong></td>
-            <td>${formattedExpiry}</td>
-          </tr>
-        </table>
+      <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: #333;">Request Details</h3>
+        <p style="margin: 5px 0;">Request ID: ${renewal._id}</p>
+        <p style="margin: 5px 0;">Submitted on: ${formattedDate}</p>
+        <p style="margin: 5px 0;">
+          Status: <span style="color: ${statusColor}; font-weight: bold;">
+            ${renewal.status}
+          </span>
+          <br/>
+          <span style="font-size: 0.9em; color: #666;">
+            Updated on: ${statusUpdateTime}
+          </span>
+        </p>
       </div>
 
-      <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
-        <h3 style="margin-top: 0;">Personal Information</h3>
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: #333;">Applicant Information</h3>
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
-            <td style="padding: 8px 0;"><strong>Full Name:</strong></td>
+            <td style="padding: 8px 0;"><strong>Name:</strong></td>
             <td>${renewal.fullName}</td>
-          </tr>
-          <tr>
-            <td style="padding: 8px 0;"><strong>Date of Birth:</strong></td>
-            <td>${formattedDOB}</td>
           </tr>
           <tr>
             <td style="padding: 8px 0;"><strong>NIC Number:</strong></td>
             <td>${renewal.nicNumber}</td>
           </tr>
           <tr>
-            <td style="padding: 8px 0;"><strong>Contact Number:</strong></td>
-            <td>${renewal.contactNumber}</td>
+            <td style="padding: 8px 0;"><strong>Passport Number:</strong></td>
+            <td>${renewal.currentPassportNumber}</td>
           </tr>
           <tr>
-            <td style="padding: 8px 0;"><strong>Email:</strong></td>
-            <td>${renewal.email}</td>
-          </tr>
-          <tr>
-            <td style="padding: 8px 0;"><strong>Address:</strong></td>
-            <td>${renewal.address}</td>
+            <td style="padding: 8px 0;"><strong>Passport Expiry:</strong></td>
+            <td>${format(new Date(renewal.currentPassportExpiryDate), 'MMMM do, yyyy')}</td>
           </tr>
         </table>
       </div>
 
-      <div style="margin-top: 20px;">
-        <p><strong>Uploaded Documents:</strong></p>
-        <ul>
-          <li>Current Passport Scan ✓</li>
-          <li>NIC Front Scan ✓</li>
-          <li>NIC Back Scan ✓</li>
-          <li>Birth Certificate ✓</li>
-          <li>Passport Photo ✓</li>
-          ${renewal.documents[PassportDocumentType.ADDITIONAL_DOCS] ? '<li>Additional Documents ✓</li>' : ''}
-        </ul>
-      </div>
+      ${renewal.status === RenewPassportStatus.READY_TO_COLLECT ? generateCollectionInstructions() : ''}
+
+      ${
+        renewal.adminRemarks
+          ? `
+        <div style="background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <h3 style="margin-top: 0;">Additional Notes</h3>
+          <p>${renewal.adminRemarks}</p>
+        </div>
+      `
+          : ''
+      }
 
       <div style="margin-top: 20px;">
-        <p><strong>Next Steps:</strong></p>
-        <ul>
-          <li>Your application will be reviewed by our team</li>
-          <li>You will receive updates about your application status via email</li>
-          <li>You can track your application status on the PassGo portal</li>
-        </ul>
+        <p>If you have any questions, please don't hesitate to contact us.</p>
+        <p>Best regards,<br>PassGo Team</p>
       </div>
-
-      <p>If you have any questions, please don't hesitate to contact us.</p>
-      <p>Best regards,<br>PassGo Team</p>
     </div>
   `;
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
+    const body = await req.json();
     const { renewal, recipientEmail } = body;
 
-    if (!renewal || !recipientEmail) {
-      return NextResponse.json(
-        { error: 'Missing required fields: renewal or recipientEmail' },
-        { status: 400 },
-      );
-    }
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: recipientEmail,
+      subject: `Passport Renewal Request Update - ${renewal._id}`,
+      html: generateRenewalEmailHtml(renewal),
+    };
 
-    const html = generateRenewalEmailHtml(renewal);
-    const subject = `PassGo - Passport Renewal Application Submitted - ${renewal._id}`;
+    await transporter.sendMail(mailOptions);
 
-    const info = await transporter.sendMail({
-      from: `"PassGo Team" <${process.env.GMAIL_USER}>`,
-      to: [recipientEmail],
-      subject,
-      html,
-      text: `Your passport renewal application (${renewal._id}) has been submitted successfully. You can track your application status on the PassGo portal.`,
-    });
-
-    return NextResponse.json(
-      { message: 'Renewal completion email sent successfully', id: info.messageId },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: 'Email sent successfully' });
   } catch (error) {
-    console.error('Failed to send renewal completion email:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
-      { status: 500 },
-    );
+    console.error('Error sending email:', error);
+    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
   }
 }
