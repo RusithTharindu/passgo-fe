@@ -11,11 +11,14 @@ import { Container } from '@/components/ui/container';
 import { useProfileData } from '@/hooks/useProfile';
 import { toast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
 const HeaderNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: profileData, isError } = useProfileData();
   const { logout } = useAuth();
+  const pathname = usePathname();
 
   if (isError) {
     toast({
@@ -30,7 +33,6 @@ const HeaderNavigation = () => {
     { href: '/applicant/myActivity', label: 'My Activity' },
     { href: '/applicant/documents', label: 'Services' },
     { href: '/applicant/support', label: 'Help & Support' },
-    { href: '/applicant/profile', label: 'Profile' },
   ];
 
   const variants = {
@@ -42,16 +44,11 @@ const HeaderNavigation = () => {
   const userEmail = profileData?.email;
 
   return (
-    <header className='sticky top-0 z-50 bg-white shadow-sm'>
+    <header className='sticky top-4 z-50 bg-transparent'>
       <Container>
-        <div className='flex items-center justify-between py-3'>
-          {/* Logo - Left Section */}
-          <motion.div
-            className='flex-shrink-0'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
+        <div className='flex h-14 items-center gap-4 py-2'>
+          {/* Left Section - Logo */}
+          <div className='flex items-center w-[240px] flex-shrink-0 bg-white/5 hover:bg-white/10 rounded-full px-4 h-10 backdrop-blur-sm'>
             <Link href='/'>
               <div className='flex items-center'>
                 {/* TODO: Add logo */}
@@ -61,45 +58,51 @@ const HeaderNavigation = () => {
                 </span>
               </div>
             </Link>
-          </motion.div>
+          </div>
 
-          {/* Nav Links - Middle Section (Hidden on Mobile) */}
-          <nav className='hidden md:flex items-center justify-center flex-1 mx-10 space-x-6'>
-            {navLinks.map((link, index) => (
-              <motion.div
-                key={link.href}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
+          {/* Middle Section - Navigation */}
+          <div className='flex-1 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full px-2 h-10 backdrop-blur-sm'>
+            <nav className='hidden md:flex items-center space-x-1'>
+              {navLinks.map(link => (
                 <Link
+                  key={link.href}
                   href={link.href}
-                  className='text-gray-700 hover:text-blue-600 transition-colors font-medium align-middle'
+                  className={cn(
+                    'px-4 py-1.5 text-sm font-medium text-gray-700 rounded-full transition-all',
+                    pathname === link.href
+                      ? 'bg-white/80 text-gray-900 shadow-[0_2px_8px_rgb(0,0,0,0.1)]'
+                      : 'hover:bg-white/40',
+                  )}
                 >
                   {link.label}
                 </Link>
-              </motion.div>
-            ))}
-          </nav>
+              ))}
+            </nav>
+          </div>
 
-          {/* User Profile - Right Section */}
-          <motion.div
-            className='flex items-center'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
+          {/* Right Section - User Profile */}
+          <div className='w-[280px] flex items-center justify-end'>
             <Popover>
-              <PopoverTrigger>
-                <div className='hidden sm:flex items-center'>
-                  <div className='mr-2 text-right'>
-                    <p className='text-sm font-medium'>{userName || 'Applicant User'}</p>
-                    <p className='text-xs text-gray-500'>{userEmail || 'applicant@example.com'}</p>
+              <PopoverTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='hidden md:flex items-center gap-2 bg-white/5 hover:bg-white/10 rounded-full h-10 px-4 backdrop-blur-sm'
+                >
+                  <div className='flex items-center'>
+                    <div className='mr-2 text-right'>
+                      <p className='text-sm font-medium text-gray-700'>
+                        {userName || 'Applicant User'}
+                      </p>
+                      <p className='text-xs text-gray-500'>
+                        {userEmail || 'applicant@example.com'}
+                      </p>
+                    </div>
+                    <div className='h-7 w-7 rounded-full bg-white/80 shadow-[0_2px_8px_rgb(0,0,0,0.1)] flex items-center justify-center text-blue-600'>
+                      <User size={15} />
+                    </div>
                   </div>
-                  <div className='h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600'>
-                    <User size={20} />
-                  </div>
-                </div>
+                </Button>
               </PopoverTrigger>
               <PopoverContent className='w-fit'>
                 <Button
@@ -114,17 +117,18 @@ const HeaderNavigation = () => {
             </Popover>
 
             {/* Mobile Menu Button */}
-            <div className='md:hidden ml-2 flex flex-row items-center justify-between'>
+            <div className='md:hidden'>
               <Button
                 variant='ghost'
                 size='icon'
+                className='bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm'
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label='Toggle menu'
               >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
               </Button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </Container>
 
@@ -140,7 +144,7 @@ const HeaderNavigation = () => {
       >
         <Container className='px-10'>
           <div className='py-3 space-y-3'>
-            {navLinks.map(link => (
+            {[...navLinks, { href: '/applicant/profile', label: 'Profile' }].map(link => (
               <motion.div
                 key={link.href}
                 variants={variants}
