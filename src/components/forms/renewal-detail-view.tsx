@@ -83,7 +83,7 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
   ) => {
     const documentUrl = renewal.documents[documentType];
     const isImage = documentUrl?.match(/\.(jpeg|jpg|gif|png)$/i);
-    const isUploading = uploadingDocument === documentType && isUploading;
+    const isUploading = uploadingDocument === documentType;
     const canUpload = renewal.status === RenewPassportStatus.PENDING;
 
     return (

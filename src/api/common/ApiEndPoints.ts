@@ -19,4 +19,6 @@ export const renewalEndpoints = {
     `${process.env.NEXT_PUBLIC_API_URL}renew-passport/${id}/documents?type=${documentType}`,
   getUserRequests: `${process.env.NEXT_PUBLIC_API_URL}renew-passport/my-requests`,
   getSingleRequest: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}renew-passport/${id}`,
+  sendCompletionEmail: (id: string) =>
+    `${process.env.NEXT_PUBLIC_API_URL}renew-passport/${id}/send-completion-email`,
 };

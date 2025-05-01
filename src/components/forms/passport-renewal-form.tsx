@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
+import axios from 'axios';
 import { CalendarIcon, ArrowRight, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -30,15 +31,20 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useCreateRenewalRequest, useUploadRenewalDocument } from '@/hooks/usePassportRenewal';
+import { DocumentUploader } from '@/components/molecules/document-uploader';
+import { useUserDetails } from '@/store/useUserStore';
+import {
+  useCreateRenewalRequest,
+  useUploadRenewalDocument,
+  useSendRenewalCompletionEmail,
+} from '@/hooks/usePassportRenewal';
+import { getSingleRenewalRequest } from '@/api/applicant/renewalApi';
 import {
   passportRenewalSchema,
   PassportRenewalFormValues,
   documentValidationSchema,
 } from '@/utils/validation/RenewalSchema';
-import { DocumentUploader } from '@/components/molecules/document-uploader';
-import { PassportDocumentType } from '@/types/passportRenewalTypes';
-import { useUserDetails } from '@/store/useUserStore';
+import { PassportDocumentType, RenewPassportResponse } from '@/types/passportRenewalTypes';
 
 const STEPS = ['Personal Information', 'Passport Details', 'Documents'] as const;
 type Step = (typeof STEPS)[number];
@@ -79,6 +85,9 @@ export function PassportRenewalForm() {
 
   const { mutate: createRenewalRequest, isPending: isCreating } = useCreateRenewalRequest();
   const { mutate: uploadDocument, isPending: isUploading } = useUploadRenewalDocument(
+    renewalId || '',
+  );
+  const { mutate: sendCompletionEmail, isPending: isSendingEmail } = useSendRenewalCompletionEmail(
     renewalId || '',
   );
 
@@ -154,7 +163,7 @@ export function PassportRenewalForm() {
     );
   };
 
-  const onSubmit = (data: PassportRenewalFormValues) => {
+  const onSubmit = async (data: PassportRenewalFormValues) => {
     if (activeStep === 'Documents' && renewalId) {
       try {
         const requiredDocuments = [
@@ -165,7 +174,11 @@ export function PassportRenewalForm() {
           PassportDocumentType.PHOTO,
         ];
 
-        const missingDocuments = requiredDocuments.filter(docType => !data.documents[docType]);
+        // Get the latest renewal data to check documents
+        const renewalData = await getSingleRenewalRequest(renewalId);
+        const missingDocuments = requiredDocuments.filter(
+          docType => !renewalData.documents[docType],
+        );
 
         if (missingDocuments.length > 0) {
           const firstMissing = missingDocuments[0];
@@ -179,16 +192,36 @@ export function PassportRenewalForm() {
           return;
         }
 
-        toast({
-          title: 'Success',
-          description:
-            'All documents uploaded successfully. Your passport renewal request is complete.',
-        });
+        // Send completion email
+        try {
+          await axios.post('/api/renewal/send', {
+            renewal: renewalData,
+            recipientEmail: userDetails?.email,
+          });
 
-        router.push(`/applicant/passport-renewal/${renewalId}`);
+          toast({
+            title: 'Success',
+            description:
+              'All documents uploaded successfully. A confirmation email has been sent to your email address.',
+          });
+          router.push(`/applicant/passport-renewal/${renewalId}`);
+        } catch (error) {
+          console.error('Failed to send completion email:', error);
+          toast({
+            title: 'Success',
+            description:
+              'Your passport renewal request is complete, but we could not send the confirmation email.',
+          });
+          router.push(`/applicant/passport-renewal/${renewalId}`);
+        }
         return;
       } catch (error) {
         console.error('Document validation failed:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to validate documents. Please try again.',
+          variant: 'destructive',
+        });
         return;
       }
     }
@@ -709,11 +742,14 @@ export function PassportRenewalForm() {
                 Previous
               </Button>
 
-              <Button type='submit' disabled={isNextDisabled() || isCreating || isUploading}>
-                {isCreating || isUploading ? (
+              <Button
+                type='submit'
+                disabled={isNextDisabled() || isCreating || isUploading || isSendingEmail}
+              >
+                {isCreating || isUploading || isSendingEmail ? (
                   <>
                     <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    {isCreating ? 'Creating...' : 'Uploading...'}
+                    {isCreating ? 'Creating...' : isUploading ? 'Uploading...' : 'Sending Email...'}
                   </>
                 ) : activeStep === 'Documents' && renewalId ? (
                   'Complete Application'

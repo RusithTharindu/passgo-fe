@@ -76,3 +76,14 @@ export const getSingleRenewalRequest = async (id: string): Promise<RenewPassport
   const response = await AxiosInstance.get(renewalEndpoints.getSingleRequest(id));
   return response.data;
 };
+
+export const sendRenewalCompletionEmail = async (id: string): Promise<{ message: string }> => {
+  try {
+    const response = await AxiosInstance.post(renewalEndpoints.sendCompletionEmail(id));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error?.response?.data?.message || error?.message || 'Failed to send completion email',
+    );
+  }
+};

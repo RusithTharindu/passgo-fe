@@ -9,6 +9,7 @@ import {
   getRenewalDocument,
   getUserRenewalRequests,
   getSingleRenewalRequest,
+  sendRenewalCompletionEmail,
 } from '@/api/applicant/renewalApi';
 import {
   RenewPassportRequest,
@@ -85,5 +86,16 @@ export function useRenewalRequest(id?: string) {
     queryKey: RENEWAL_QUERY_KEYS.detail(id || ''),
     queryFn: () => getSingleRenewalRequest(id || ''),
     enabled: !!id,
+  });
+}
+
+export function useSendRenewalCompletionEmail(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ message: string }, Error>({
+    mutationFn: () => sendRenewalCompletionEmail(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: RENEWAL_QUERY_KEYS.detail(id) });
+    },
   });
 }
