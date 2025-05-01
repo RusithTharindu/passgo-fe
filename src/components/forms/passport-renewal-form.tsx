@@ -176,17 +176,37 @@ export function PassportRenewalForm() {
 
         // Get the latest renewal data to check documents
         const renewalData = await getSingleRenewalRequest(renewalId);
+
+        // Wait a short moment to ensure all document uploads are reflected
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Revalidate the form data with the latest server state
+        const latestRenewalData = await getSingleRenewalRequest(renewalId);
         const missingDocuments = requiredDocuments.filter(
-          docType => !renewalData.documents[docType],
+          docType => !latestRenewalData.documents[docType],
         );
 
         if (missingDocuments.length > 0) {
-          const firstMissing = missingDocuments[0];
-          form.setFocus(`documents.${firstMissing}` as any);
+          const missingDocLabels = missingDocuments.map(docType => {
+            switch (docType) {
+              case PassportDocumentType.CURRENT_PASSPORT:
+                return 'Current Passport';
+              case PassportDocumentType.NIC_FRONT:
+                return 'NIC Front';
+              case PassportDocumentType.NIC_BACK:
+                return 'NIC Back';
+              case PassportDocumentType.BIRTH_CERT:
+                return 'Birth Certificate';
+              case PassportDocumentType.PHOTO:
+                return 'Passport Photo';
+              default:
+                return docType;
+            }
+          });
 
           toast({
             title: 'Missing Documents',
-            description: 'Please upload all required documents',
+            description: `Please upload the following required documents: ${missingDocLabels.join(', ')}`,
             variant: 'destructive',
           });
           return;
@@ -195,7 +215,7 @@ export function PassportRenewalForm() {
         // Send completion email
         try {
           await axios.post('/api/renewal/send', {
-            renewal: renewalData,
+            renewal: latestRenewalData,
             recipientEmail: userDetails?.email,
           });
 

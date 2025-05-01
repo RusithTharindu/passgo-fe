@@ -1,9 +1,5 @@
 'use client';
 
-{
-   
-}
-
 import { useState } from 'react';
 import { useUserRenewalRequests } from '@/hooks/usePassportRenewal';
 import { PassportRenewalCard } from '@/components/cards/passport-renewal-card';
@@ -44,6 +40,7 @@ export function PassportRenewalsList() {
           <TabsTrigger value={RenewPassportStatus.PENDING}>Pending</TabsTrigger>
           <TabsTrigger value={RenewPassportStatus.VERIFIED}>Verified</TabsTrigger>
           <TabsTrigger value={RenewPassportStatus.REJECTED}>Rejected</TabsTrigger>
+          <TabsTrigger value={RenewPassportStatus.READY_TO_COLLECT}>Ready to Collect</TabsTrigger>
         </TabsList>
       </Tabs>
 
