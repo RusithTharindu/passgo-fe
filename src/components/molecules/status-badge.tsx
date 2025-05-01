@@ -23,10 +23,27 @@ const statusConfig = {
     variant: 'outline',
     className: 'border-red-500 text-red-600 bg-red-50',
   },
+  [RenewPassportStatus.READY_TO_COLLECT]: {
+    label: 'Ready to Collect',
+    variant: 'outline',
+    className: 'border-blue-500 text-blue-600 bg-blue-50',
+  },
 } as const;
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
   const config = statusConfig[status];
+
+  if (!config) {
+    // Fallback for unknown status
+    return (
+      <Badge
+        variant='outline'
+        className={cn('border-gray-500 text-gray-600 bg-gray-50', className)}
+      >
+        {status}
+      </Badge>
+    );
+  }
 
   return (
     <Badge variant='outline' className={cn(config.className, className)}>
