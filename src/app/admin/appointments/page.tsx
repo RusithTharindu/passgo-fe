@@ -3,38 +3,135 @@
 import { useRouter } from 'next/navigation';
 import { DataTable } from './data-table';
 import { useAppointments } from '@/hooks/useAppointments';
-import { Loader2 } from 'lucide-react';
-import { Appointment } from '@/types/appointmentTypes';
+import { Loader2, Search, Calendar } from 'lucide-react';
+import { Appointment, AppointmentStatus } from '@/types/appointmentTypes';
+import { AppointmentStats } from '@/components/admin/appointment-stats';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 export default function AppointmentsPage() {
   const router = useRouter();
   const { data: appointments, isLoading } = useAppointments();
-
-  console.log('Appointments data:', appointments);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState<Date>();
 
   // Handle both array and paginated response types
   const appointmentItems: Appointment[] = Array.isArray(appointments)
     ? appointments
     : (appointments?.items ?? []);
 
+  // Filter appointments based on search query, status, and date
+  const filteredAppointments = appointmentItems.filter(appointment => {
+    const matchesSearch =
+      searchQuery === '' ||
+      appointment.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      appointment.nicNumber.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
+
+    const matchesDate =
+      !dateFilter ||
+      format(new Date(appointment.preferredDate), 'yyyy-MM-dd') ===
+        format(dateFilter, 'yyyy-MM-dd');
+
+    return matchesSearch && matchesStatus && matchesDate;
+  });
+
   return (
-    <div className='space-y-6'>
+    <div className='space-y-6 p-6'>
       <div className='flex items-center justify-between'>
-        <h1 className='text-2xl font-bold dark:text-gray-100'>Appointments</h1>
+        <h1 className='text-3xl font-bold'>Appointment Management</h1>
       </div>
 
-      <div className='rounded-lg border dark:border-gray-800 dark:bg-gray-900/50 p-4'>
-        {isLoading ? (
-          <div className='flex justify-center items-center h-64'>
-            <Loader2 className='h-8 w-8 animate-spin' />
+      {isLoading ? (
+        <div className='flex justify-center items-center h-64'>
+          <Loader2 className='h-8 w-8 animate-spin' />
+        </div>
+      ) : (
+        <>
+          <AppointmentStats appointments={appointmentItems} />
+
+          <div className='rounded-lg border bg-card'>
+            <div className='p-4 border-b'>
+              <h2 className='text-lg font-medium'>Appointment List</h2>
+              <p className='text-sm text-muted-foreground mt-1'>
+                Manage and process appointment requests
+              </p>
+            </div>
+
+            <div className='p-4 space-y-4'>
+              <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
+                <div className='flex-1 w-full sm:max-w-sm'>
+                  <div className='relative'>
+                    <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
+                    <Input
+                      placeholder='Search by name or NIC number...'
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      className='pl-8'
+                    />
+                  </div>
+                </div>
+                <div className='flex gap-4'>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='outline'
+                        className={cn(
+                          'w-[200px] justify-start text-left font-normal',
+                          !dateFilter && 'text-muted-foreground',
+                        )}
+                      >
+                        <Calendar className='mr-2 h-4 w-4' />
+                        {dateFilter ? format(dateFilter, 'PPP') : 'Filter by date'}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className='w-auto p-0' align='start'>
+                      <CalendarComponent
+                        mode='single'
+                        selected={dateFilter}
+                        onSelect={setDateFilter}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Filter by status' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>All Status</SelectItem>
+                      {Object.values(AppointmentStatus).map(status => (
+                        <SelectItem key={status} value={status}>
+                          {status.charAt(0) + status.slice(1).toLowerCase()}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <DataTable
+                data={filteredAppointments}
+                onRowClick={appointment => router.push(`/admin/appointments/${appointment.id}`)}
+              />
+            </div>
           </div>
-        ) : (
-          <DataTable
-            data={appointmentItems}
-            onRowClick={appointment => router.push(`/admin/appointments/${appointment.id}`)}
-          />
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }
