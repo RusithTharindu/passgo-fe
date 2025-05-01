@@ -29,7 +29,7 @@ export default function ApplicationsPage() {
   }));
 
   // Filter applications based on search query and status
-  const filteredApplications = applicationsWithDate?.filter(app => {
+  const filteredApplications = applicationsWithDate?.filter((app: Application) => {
     const matchesSearch =
       searchQuery === '' ||
       app.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
