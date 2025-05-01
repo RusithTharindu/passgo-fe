@@ -103,3 +103,53 @@ p {
 .link {
   color: #60a5fa;
 }
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-animate {
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.gradient-animate::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 80%;
+  height: 100%;
+  background: radial-gradient(
+    circle at center,
+    rgba(96, 165, 250, 0.15) 0%,
+    rgba(96, 165, 250, 0.1) 20%,
+    rgba(96, 165, 250, 0.05) 40%,
+    transparent 60%
+  );
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: float 10s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(5%) scale(1.02);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
