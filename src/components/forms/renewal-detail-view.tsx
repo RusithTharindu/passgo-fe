@@ -18,6 +18,7 @@ import {
   RenewPassportStatus,
 } from '@/types/passportRenewalTypes';
 import { DocumentUploader } from '@/components/molecules/document-uploader';
+import { SubmittedDocumentView } from '@/components/molecules/submitted-document-view';
 import { useUploadRenewalDocument, useRenewalDocument } from '@/hooks/usePassportRenewal';
 import { useToast } from '@/hooks/use-toast';
 
@@ -81,9 +82,14 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
     isRequired: boolean = true,
   ) => {
     const documentUrl = renewal.documents[documentType];
-    const isImage = documentUrl?.match(/\.(jpeg|jpg|gif|png)$/i);
     const isUploading = uploadingDocument === documentType;
     const canUpload = renewal.status === RenewPassportStatus.PENDING;
+
+    if (documentUrl) {
+      return (
+        <SubmittedDocumentView label={label} documentUrl={documentUrl} isRequired={isRequired} />
+      );
+    }
 
     return (
       <div className='border rounded-lg p-4 space-y-3'>
@@ -92,28 +98,9 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
             {label}
             {isRequired && <span className='text-red-500 ml-1'>*</span>}
           </h3>
-          {documentUrl && (
-            <Button size='sm' variant='outline' asChild>
-              <a href={documentUrl} target='_blank' rel='noopener noreferrer'>
-                <Download className='mr-2 h-4 w-4' />
-                Download
-              </a>
-            </Button>
-          )}
         </div>
 
-        {documentUrl ? (
-          <div className='relative h-48 w-full bg-gray-50 border rounded-md overflow-hidden'>
-            {isImage ? (
-              <Image src={documentUrl} alt={label} fill className='object-contain' />
-            ) : (
-              <div className='flex flex-col items-center justify-center h-full'>
-                <FileText className='h-10 w-10 text-primary' />
-                <p className='mt-2 text-sm'>Document uploaded</p>
-              </div>
-            )}
-          </div>
-        ) : canUpload ? (
+        {canUpload ? (
           <DocumentUploader
             label={`Upload ${label}`}
             value=''
