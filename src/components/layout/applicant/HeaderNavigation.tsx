@@ -31,7 +31,7 @@ const HeaderNavigation = () => {
   const navLinks = [
     { href: '/applicant/home', label: 'Home' },
     { href: '/applicant/myActivity', label: 'My Activity' },
-    { href: '/applicant/documents', label: 'Services' },
+    { href: '/applicant/services', label: 'Services' },
     { href: '/applicant/support', label: 'Help & Support' },
   ];
 
