@@ -9,7 +9,7 @@ export const ApplicantServices: ServiceCardType[] = [
     description:
       'Apply for a new passport with our streamlined process. Complete your application online and track its progress in real-time.',
     image: '/assets/images/applicant-home/img-1.jpg',
-    link: '/applicant/passport/pre-apply',
+    link: '/applicant/applications/',
     imagePosition: 'right',
     linkText: 'Apply New Passport',
   },

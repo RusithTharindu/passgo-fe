@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Application } from '@/types/applicationTypes';
 import { FileText, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { ApplicationStatus } from '@/types/application';
 
 interface ApplicationStatsProps {
   applications: Application[];
@@ -9,9 +10,9 @@ interface ApplicationStatsProps {
 export function ApplicationStats({ applications }: ApplicationStatsProps) {
   const stats = {
     total: applications.length,
-    pending: applications.filter(a => a.status === 'PENDING').length,
-    approved: applications.filter(a => a.status === 'APPROVED').length,
-    rejected: applications.filter(a => a.status === 'REJECTED').length,
+    pending: applications.filter(a => a.status === ApplicationStatus.PENDING).length,
+    approved: applications.filter(a => a.status === ApplicationStatus.COMPLETED).length,
+    rejected: applications.filter(a => a.status === ApplicationStatus.REJECTED).length,
   };
 
   return (

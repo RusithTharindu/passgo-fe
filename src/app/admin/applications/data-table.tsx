@@ -40,16 +40,18 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 interface DataTableProps {
   data: Application[];
 }
 
 export function DataTable({ data }: DataTableProps) {
+  const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState<string>('');
 
   const table = useReactTable({
     data,
@@ -79,12 +81,16 @@ export function DataTable({ data }: DataTableProps) {
     table.getColumn(columnId)?.setFilterValue(value === 'all' ? undefined : value);
   };
 
+  const handleRowClick = (applicationId: string) => {
+    router.push(`/admin/applications/${applicationId}`);
+  };
+
   return (
     <div className='space-y-4'>
       <div className='flex items-center gap-4'>
         <Input
           placeholder='Search by name...'
-          value={globalFilter ?? ''}
+          value={globalFilter}
           onChange={event => setGlobalFilter(event.target.value)}
           className='max-w-sm'
         />
@@ -191,7 +197,11 @@ export function DataTable({ data }: DataTableProps) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  onClick={() => handleRowClick(row.original._id)}
+                  className='cursor-pointer hover:bg-muted/50'
+                >
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
