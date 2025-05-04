@@ -89,10 +89,10 @@ export default function AdminApplicationDetails() {
     queryFn: async () => {
       // Since getById doesn't take an id parameter anymore,
       // we'll use the more generic update method to fetch by ID
-      const response = await applicationApi.getAll();
-      const app = response.find(a => a._id === params.id || a.id === params.id);
-      if (!app) throw new Error('Application not found');
-      return app;
+      const response = await applicationApi.getById(params.id as string);
+      // const app = response.find(a => a._id === params.id || a.id === params.id);
+      // if (!app) throw new Error('Application not found');
+      return response;
     },
   });
 

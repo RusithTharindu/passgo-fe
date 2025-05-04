@@ -25,7 +25,7 @@ export function ApplicationDashboard() {
 
   const { data: applications = [], isLoading } = useQuery<Application[]>({
     queryKey: ['applications'],
-    queryFn: applicationApi.getById,
+    queryFn: applicationApi.getMyAll,
   });
 
   const filteredApplications = applications.filter((app: Application) => {
