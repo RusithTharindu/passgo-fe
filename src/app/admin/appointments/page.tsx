@@ -3,10 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { DataTable } from './data-table';
 import { useAppointments } from '@/hooks/useAppointments';
-import { Loader2, Search, Calendar } from 'lucide-react';
+import { Loader2, Calendar } from 'lucide-react';
 import { Appointment, AppointmentStatus } from '@/types/appointmentTypes';
 import { AppointmentStats } from '@/components/admin/appointment-stats';
-import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import {
   Select,
@@ -24,7 +23,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 export default function AppointmentsPage() {
   const router = useRouter();
   const { data: appointments, isLoading } = useAppointments();
-  const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState<Date>();
 
@@ -33,13 +31,8 @@ export default function AppointmentsPage() {
     ? appointments
     : (appointments?.items ?? []);
 
-  // Filter appointments based on search query, status, and date
+  // Filter appointments based on status and date
   const filteredAppointments = appointmentItems.filter(appointment => {
-    const matchesSearch =
-      searchQuery === '' ||
-      appointment.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      appointment.nicNumber.toLowerCase().includes(searchQuery.toLowerCase());
-
     const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
 
     const matchesDate =
@@ -47,7 +40,7 @@ export default function AppointmentsPage() {
       format(new Date(appointment.preferredDate), 'yyyy-MM-dd') ===
         format(dateFilter, 'yyyy-MM-dd');
 
-    return matchesSearch && matchesStatus && matchesDate;
+    return matchesStatus && matchesDate;
   });
 
   return (
@@ -75,15 +68,7 @@ export default function AppointmentsPage() {
             <div className='p-4 space-y-4'>
               <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
                 <div className='flex-1 w-full sm:max-w-sm'>
-                  <div className='relative'>
-                    <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-                    <Input
-                      placeholder='Search by name or NIC number...'
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      className='pl-8'
-                    />
-                  </div>
+                  {/* Search input was here but it's currently commented out */}
                 </div>
                 <div className='flex gap-4'>
                   <Popover>

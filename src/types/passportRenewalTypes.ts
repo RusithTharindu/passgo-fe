@@ -6,12 +6,12 @@ export enum RenewPassportStatus {
 }
 
 export enum PassportDocumentType {
-  CURRENT_PASSPORT = 'current-passport',
-  NIC_FRONT = 'nic-front',
-  NIC_BACK = 'nic-back',
-  BIRTH_CERT = 'birth-certificate',
-  PHOTO = 'passport-photo',
-  ADDITIONAL_DOCS = 'additional-documents',
+  CURRENT_PASSPORT = 'current_passport',
+  NIC_FRONT = 'nic_front',
+  NIC_BACK = 'nic_back',
+  BIRTH_CERT = 'birth_certificate',
+  PHOTO = 'passport_photo',
+  ADDITIONAL_DOCS = 'additional_documents',
 }
 
 export interface PassportRenewalDocuments {

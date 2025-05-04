@@ -39,7 +39,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState('');
+  const [globalFilter, setGlobalFilter] = React.useState<string>('');
 
   const table = useReactTable({
     data,
@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
           <div className='flex-1'>
             <Input
               placeholder='Search...'
-              value={globalFilter ?? ''}
+              value={globalFilter}
               onChange={event => setGlobalFilter(event.target.value)}
               className='max-w-sm'
             />

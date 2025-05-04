@@ -1,7 +1,5 @@
 'use client';
 
- 
-
 import { DataTable } from './data-table';
 import { useGetApplications } from '@/hooks/useApplication';
 import { Application } from '@/types/applicationTypes';
@@ -16,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ApplicationStatus } from '@/types/application';
 
 export default function ApplicationsPage() {
   const { data: applications, isLoading } = useGetApplications();
@@ -82,11 +81,22 @@ export default function ApplicationsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value='all'>All Status</SelectItem>
-                    <SelectItem value='PENDING'>Pending</SelectItem>
-                    <SelectItem value='APPROVED'>Approved</SelectItem>
-                    <SelectItem value='REJECTED'>Rejected</SelectItem>
-                    <SelectItem value='IN_PROGRESS'>In Progress</SelectItem>
-                    <SelectItem value='COMPLETED'>Completed</SelectItem>
+                    <SelectItem value={ApplicationStatus.PENDING}>Pending</SelectItem>
+                    <SelectItem value={ApplicationStatus.DOCUMENT_VERIFICATION}>
+                      Document Verification
+                    </SelectItem>
+                    <SelectItem value={ApplicationStatus.BIOMETRIC_PENDING}>
+                      Biometric Pending
+                    </SelectItem>
+                    <SelectItem value={ApplicationStatus.BIOMETRIC_COMPLETED}>
+                      Biometric Completed
+                    </SelectItem>
+                    <SelectItem value={ApplicationStatus.PAYMENT_PENDING}>
+                      Payment Pending
+                    </SelectItem>
+                    <SelectItem value={ApplicationStatus.PROCESSING}>Processing</SelectItem>
+                    <SelectItem value={ApplicationStatus.COMPLETED}>Completed</SelectItem>
+                    <SelectItem value={ApplicationStatus.REJECTED}>Rejected</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

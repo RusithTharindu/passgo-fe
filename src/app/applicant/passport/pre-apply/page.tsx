@@ -32,7 +32,7 @@ export default function PreApplyPage() {
       });
       return;
     }
-    router.push('/applicant/passport/apply');
+    router.push('/applicant/applications/new');
   };
 
   const handlePdfError = () => {

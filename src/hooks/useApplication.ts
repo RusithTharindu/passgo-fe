@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { applicantQueryKeys } from '../api/applicant/QueryKeys';
 import { createApplication } from '../api/applicant/ApplicantApi';
 import { toast } from './use-toast';
@@ -10,6 +10,8 @@ import {
   updateApplication,
 } from '@/api/admin/AdminApi';
 import { UpdateApplicationPayload } from '@/types/applicationTypes';
+import { applicationApi } from '@/api/application';
+import { Application } from '@/types/application';
 
 export const useCreateApplication = () => {
   return useMutation({
@@ -59,3 +61,64 @@ export const useDeleteApplication = (id: string) => {
     mutationFn: () => deleteApplication(id),
   });
 };
+
+export function useApplicationSubmit() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: applicationApi.create,
+    onSuccess: () => {
+      // Invalidate the applications list query when a new application is submitted
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+    },
+  });
+}
+
+export function useApplications() {
+  return useQuery({
+    queryKey: ['applications'],
+    queryFn: applicationApi.getAll,
+  });
+}
+
+export function useApplicationById(id: string) {
+  return useQuery({
+    queryKey: ['application', id],
+    queryFn: () => applicationApi.getById(id),
+    enabled: !!id,
+  });
+}
+
+export function useUpdateUserApplication() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Application> }) =>
+      applicationApi.update(id, data),
+    onSuccess: data => {
+      // Update both the applications list and the specific application
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ['application', data.id] });
+    },
+  });
+}
+
+export function useCancelApplication() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: applicationApi.cancel,
+    onSuccess: (_, id) => {
+      // Invalidate the applications list and the specific application
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ['application', id] });
+    },
+  });
+}
+
+export function useDocumentUpload() {
+  return useMutation({
+    mutationFn: ({ documentType, file }: { documentType: string; file: File }) =>
+      applicationApi.uploadDocument(documentType as DocumentType, file),
+  });
+}
