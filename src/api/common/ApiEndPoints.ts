@@ -10,3 +10,15 @@ export const profileEndpoints = {
 export const applicationEndpoints = {
   application: `${process.env.NEXT_PUBLIC_API_URL}application`,
 };
+
+export const renewalEndpoints = {
+  createRenewal: `${process.env.NEXT_PUBLIC_API_URL}renew-passport`,
+  uploadDocument: (id: string, documentType: string) =>
+    `${process.env.NEXT_PUBLIC_API_URL}renew-passport/${id}/documents?type=${documentType}`,
+  getDocument: (id: string, documentType: string) =>
+    `${process.env.NEXT_PUBLIC_API_URL}renew-passport/${id}/documents?type=${documentType}`,
+  getUserRequests: `${process.env.NEXT_PUBLIC_API_URL}renew-passport/my-requests`,
+  getSingleRequest: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}renew-passport/${id}`,
+  sendCompletionEmail: (id: string) =>
+    `${process.env.NEXT_PUBLIC_API_URL}renew-passport/${id}/send-completion-email`,
+};
