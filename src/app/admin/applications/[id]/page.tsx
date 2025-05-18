@@ -27,6 +27,7 @@ import {
   getStatusDescription,
 } from '@/utils/statusTransitions';
 import { ApplicationStatus as AppStatus } from '@/types/application';
+import axios from 'axios';
 
 interface Document {
   id: string;
@@ -135,21 +136,36 @@ export default function AdminApplicationDetails() {
           selectedStatus === ApplicationStatus.REJECTED ? rejectionReason : undefined,
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['application', params.id] });
-      toast({
-        title: 'Status updated successfully',
-        description: 'The application status has been updated and the applicant has been notified.',
-      });
+    onSuccess: async updatedApplication => {
+      try {
+        // Send email notification
+        await axios.post('/api/application/send', {
+          application: updatedApplication,
+          recipientEmail: updatedApplication.emailAddress,
+        });
 
-      // Reset form fields after successful update
-      setSelectedStatus('');
-      setAdminNotes('');
-      setRejectionReason('');
+        queryClient.invalidateQueries({ queryKey: ['application', params.id] });
+        toast({
+          title: 'Success',
+          description: 'Application status updated successfully and notification sent.',
+        });
+
+        // Reset form fields after successful update
+        setSelectedStatus('');
+        setAdminNotes('');
+        setRejectionReason('');
+      } catch (error) {
+        console.error('Failed to send email notification:', error);
+        toast({
+          title: 'Status Updated',
+          description: 'Application status updated but failed to send email notification.',
+          variant: 'destructive',
+        });
+      }
     },
     onError: error => {
       toast({
-        title: 'Error updating status',
+        title: 'Error',
         description: error.message || 'Something went wrong',
         variant: 'destructive',
       });

@@ -115,7 +115,7 @@ export const applicationApi = {
       formData.append('file', file);
       formData.append('documentType', documentType);
 
-      const response = await AxiosInstance.post(`${API_URL}/upload`, formData, {
+      const response = await AxiosInstance.post(`${API_URL}upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -137,7 +137,7 @@ export const applicationApi = {
   // Update an existing application
   update: async (id: string, data: Partial<Application>): Promise<Application> => {
     try {
-      const response = await AxiosInstance.patch(`${API_URL}/applications/${id}`, data);
+      const response = await AxiosInstance.patch(`${API_URL}application/${id}`, data);
       return response.data;
     } catch (error) {
       console.error('API Error - Update application:', error);
@@ -148,7 +148,7 @@ export const applicationApi = {
   // Cancel an application
   cancel: async (id: string): Promise<void> => {
     try {
-      await AxiosInstance.post(`${API_URL}/applications/${id}/cancel`);
+      await AxiosInstance.post(`${API_URL}application/${id}/cancel`);
     } catch (error) {
       console.error('API Error - Cancel application:', error);
       throw new Error('Failed to cancel application');

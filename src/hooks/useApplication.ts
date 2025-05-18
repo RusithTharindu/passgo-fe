@@ -11,7 +11,8 @@ import {
 } from '@/api/admin/AdminApi';
 import { UpdateApplicationPayload } from '@/types/applicationTypes';
 import { applicationApi } from '@/api/application';
-import { Application } from '@/types/application';
+import { Application, DocumentType } from '@/types/application';
+import axios from 'axios';
 
 export const useCreateApplication = () => {
   return useMutation({
@@ -67,9 +68,20 @@ export function useApplicationSubmit() {
 
   return useMutation({
     mutationFn: applicationApi.create,
-    onSuccess: () => {
-      // Invalidate the applications list query when a new application is submitted
-      queryClient.invalidateQueries({ queryKey: ['applications'] });
+    onSuccess: async application => {
+      try {
+        // Send email notification
+        await axios.post('/api/application/send', {
+          application,
+          recipientEmail: application.emailAddress,
+        });
+
+        // Invalidate the applications list query when a new application is submitted
+        queryClient.invalidateQueries({ queryKey: ['applications'] });
+      } catch (error) {
+        console.error('Failed to send application email:', error);
+        // Don't throw error - we don't want to break the flow if email fails
+      }
     },
   });
 }
@@ -118,7 +130,7 @@ export function useCancelApplication() {
 
 export function useDocumentUpload() {
   return useMutation({
-    mutationFn: ({ documentType, file }: { documentType: string; file: File }) =>
-      applicationApi.uploadDocument(documentType as DocumentType, file),
+    mutationFn: ({ documentType, file }: { documentType: DocumentType; file: File }) =>
+      applicationApi.uploadDocument(documentType, file),
   });
 }
