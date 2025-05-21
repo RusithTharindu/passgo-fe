@@ -41,6 +41,15 @@ interface ApiError extends Error {
   response?: AxiosResponse;
 }
 
+interface DocumentUrls {
+  current_passport?: string;
+  nic_front?: string;
+  nic_back?: string;
+  birth_certificate?: string;
+  passport_photo?: string;
+  additional_documents?: string;
+}
+
 export const applicationApi = {
   // Create a new application
   create: async (formData: Record<string, unknown>): Promise<Application> => {
@@ -56,16 +65,9 @@ export const applicationApi = {
   // Get application by ID
   getById: async (id?: string): Promise<Application> => {
     try {
-      let response;
-
-      if (id) {
-        // If ID is provided, fetch specific application with retry logic
-        response = await fetchWithRetry(`${API_URL}application/${id}`);
-      } else {
-        // Fallback to fetching user's applications (likely the most recent one)
-        response = await fetchWithRetry(`${API_URL}application/my-applications`);
-      }
-
+      console.log('API - Fetching application:', id);
+      const response = await fetchWithRetry(`${API_URL}application/${id}`);
+      console.log('API - Application response:', response.data);
       return response.data;
     } catch (error: unknown) {
       // Properly extract error details to propagate to the UI
@@ -76,7 +78,12 @@ export const applicationApi = {
         : axiosError.message || 'Failed to fetch application';
 
       // Log the detailed error for debugging
-      console.error('API Error - Get application:', { statusCode, message: errorMessage, error });
+      console.error('API Error - Get application:', {
+        statusCode,
+        message: errorMessage,
+        error,
+        response: axiosError.response?.data,
+      });
 
       // Create an error object with additional properties
       const enhancedError: ApiError = new Error(errorMessage);
@@ -108,7 +115,56 @@ export const applicationApi = {
     }
   },
 
-  // Upload document for an application
+  // Update the document URL fetching to match backend implementation
+  getDocumentUrls: async (applicationId: string): Promise<DocumentUrls> => {
+    if (!applicationId) {
+      throw new Error('Application ID is required');
+    }
+
+    try {
+      console.log('Fetching document URLs for application:', applicationId);
+      // Update the endpoint to match the backend
+      const response = await AxiosInstance.get(`${API_URL}application/${applicationId}`);
+
+      console.log('Document URLs response:', response.data);
+
+      if (!response.data) {
+        throw new Error('No document URLs returned from server');
+      }
+
+      // Extract document URLs from the application data
+      const { documents } = response.data;
+
+      console.log('Documents:', documents);
+
+      return {
+        current_passport: documents?.current_passport || '',
+        nic_front: documents?.nic_front || '',
+        nic_back: documents?.nic_back || '',
+        birth_certificate: documents?.birth_certificate || '',
+        passport_photo: documents?.passport_photo || '',
+        additional_documents: documents?.additional_documents || '',
+      };
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      const statusCode = axiosError.response?.status;
+      const errorMessage = axiosError.response?.data
+        ? ((axiosError.response.data as Record<string, unknown>).message as string)
+        : axiosError.message || 'Failed to get document URLs';
+
+      console.error('API Error - Get document URLs:', {
+        statusCode,
+        message: errorMessage,
+        error,
+        applicationId,
+        response: axiosError.response?.data,
+      });
+
+      throw new Error(errorMessage);
+    }
+  },
+
+  // Update the uploadDocument function to handle the response better
   uploadDocument: async (documentType: DocumentType, file: File): Promise<{ url: string }> => {
     try {
       const formData = new FormData();
@@ -119,13 +175,12 @@ export const applicationApi = {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        onUploadProgress: progressEvent => {
-          // Handle progress event if needed
-          if (progressEvent.total) {
-            console.log('Upload progress:', progressEvent.loaded / progressEvent.total);
-          }
-        },
       });
+
+      // Check if we got a URL back
+      if (!response.data?.url) {
+        throw new Error('No URL returned from server');
+      }
 
       return response.data;
     } catch (error) {

@@ -1,11 +1,15 @@
 'use client';
 
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { applicationApi } from '@/api/application';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -18,8 +22,6 @@ import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { ArrowLeft, Loader2, FileText, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import Image from 'next/image';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import {
   ApplicationStatus,
   getValidNextStatuses,
@@ -28,51 +30,15 @@ import {
 } from '@/utils/statusTransitions';
 import { ApplicationStatus as AppStatus } from '@/types/application';
 import axios from 'axios';
+import { DocumentPreview } from '@/components/molecules/document-preview';
+import { PassportDocumentType } from '@/types/passportRenewalTypes';
 
 interface Document {
   id: string;
   name: string;
   url: string;
   type: string;
-}
-
-function DocumentPreview({ label, url, type }: { label: string; url: string; type: string }) {
-  const [showPreview, setShowPreview] = useState(false);
-  const isImage = type.startsWith('image/');
-
-  return (
-    <>
-      <div className='border rounded-lg p-4 space-y-3'>
-        <div className='flex justify-between items-center'>
-          <h3 className='font-medium text-sm'>{label}</h3>
-          <Button size='sm' variant='outline' onClick={() => setShowPreview(true)}>
-            View
-          </Button>
-        </div>
-        <div className='aspect-video relative bg-muted rounded-md overflow-hidden'>
-          {isImage ? (
-            <Image src={url} alt={label} fill className='object-cover' />
-          ) : (
-            <div className='flex items-center justify-center h-full'>
-              <FileText className='h-8 w-8 text-muted-foreground' />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <Dialog open={showPreview} onOpenChange={setShowPreview}>
-        <DialogContent className='max-w-4xl'>
-          {isImage ? (
-            <div className='relative aspect-video'>
-              <Image src={url} alt={label} fill className='object-contain' />
-            </div>
-          ) : (
-            <iframe src={url} title={label} className='w-full h-[80vh]' />
-          )}
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+  verified?: boolean;
 }
 
 export default function AdminApplicationDetails() {
@@ -88,13 +54,12 @@ export default function AdminApplicationDetails() {
   const { data: application, isLoading } = useQuery({
     queryKey: ['application', params.id],
     queryFn: async () => {
-      // Since getById doesn't take an id parameter anymore,
-      // we'll use the more generic update method to fetch by ID
+      console.log('Fetching application data for ID:', params.id);
       const response = await applicationApi.getById(params.id as string);
-      // const app = response.find(a => a._id === params.id || a.id === params.id);
-      // if (!app) throw new Error('Application not found');
+      console.log('Application data received:', response);
       return response;
     },
+    enabled: Boolean(params.id),
   });
 
   // Update available statuses when the application data is loaded
@@ -402,20 +367,68 @@ export default function AdminApplicationDetails() {
         </Card>
 
         {/* Documents */}
-        {application.documents && application.documents.length > 0 && (
-          <Card className='md:col-span-2'>
-            <CardHeader>
-              <CardTitle>Submitted Documents</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-                {application.documents.map((doc: Document) => (
-                  <DocumentPreview key={doc.id} label={doc.name} url={doc.url} type={doc.type} />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <Card className='md:col-span-2'>
+          <CardHeader>
+            <CardTitle>Submitted Documents</CardTitle>
+            <CardDescription>Review uploaded documents</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Debug log */}
+            {(() => {
+              const id = application._id;
+              console.log('Rendering documents section with application ID:', id);
+              return null;
+            })()}
+
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+              {/* Current Passport */}
+              <DocumentPreview
+                applicationId={application._id}
+                label='Current Passport'
+                documentType={PassportDocumentType.CURRENT_PASSPORT}
+                isRequired
+              />
+
+              {/* NIC */}
+              <DocumentPreview
+                applicationId={application._id}
+                label='NIC Front'
+                documentType={PassportDocumentType.NIC_FRONT}
+                isRequired
+              />
+              <DocumentPreview
+                applicationId={application._id}
+                label='NIC Back'
+                documentType={PassportDocumentType.NIC_BACK}
+                isRequired
+              />
+
+              {/* Birth Certificate */}
+              <DocumentPreview
+                applicationId={application._id}
+                label='Birth Certificate'
+                documentType={PassportDocumentType.BIRTH_CERT}
+                isRequired
+              />
+
+              {/* Passport Photo */}
+              <DocumentPreview
+                applicationId={application._id}
+                label='Passport Photo'
+                documentType={PassportDocumentType.PHOTO}
+                isRequired
+              />
+
+              {/* Additional Documents */}
+              <DocumentPreview
+                applicationId={application._id}
+                label='Additional Documents'
+                documentType={PassportDocumentType.ADDITIONAL_DOCS}
+                isRequired={false}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Status Update Section */}
         <Card className='md:col-span-2'>

@@ -1,19 +1,15 @@
 'use client';
 
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+
 import { DataTable } from './data-table';
 import { useGetApplications } from '@/hooks/useApplication';
 import { Application } from '@/types/applicationTypes';
 import { ApplicationStats } from '@/components/admin/application-stats';
-import { Loader2, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { ApplicationStatus } from '@/types/application';
 
 export default function ApplicationsPage() {
@@ -63,7 +59,7 @@ export default function ApplicationsPage() {
             </div>
 
             <div className='p-4 space-y-4'>
-              <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
+              {/* <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
                 <div className='flex-1 w-full sm:max-w-sm'>
                   <div className='relative'>
                     <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
@@ -99,7 +95,7 @@ export default function ApplicationsPage() {
                     <SelectItem value={ApplicationStatus.REJECTED}>Rejected</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
 
               <DataTable data={filteredApplications || []} />
             </div>

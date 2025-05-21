@@ -1,5 +1,9 @@
 'use client';
 
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+
 import { useRouter } from 'next/navigation';
 import { DataTable } from './data-table';
 import { useAppointments } from '@/hooks/useAppointments';
@@ -66,9 +70,8 @@ export default function AppointmentsPage() {
             </div>
 
             <div className='p-4 space-y-4'>
-              <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
+              {/* <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
                 <div className='flex-1 w-full sm:max-w-sm'>
-                  {/* Search input was here but it's currently commented out */}
                 </div>
                 <div className='flex gap-4'>
                   <Popover>
@@ -107,7 +110,7 @@ export default function AppointmentsPage() {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
+              </div> */}
 
               <DataTable
                 data={filteredAppointments}

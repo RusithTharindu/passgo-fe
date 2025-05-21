@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { SubmittedDocumentView } from '@/components/molecules/submitted-document-view';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DocumentPreview } from '@/components/molecules/document-preview';
 
 const documentLabels = {
   [PassportDocumentType.CURRENT_PASSPORT]: 'Current Passport',
@@ -188,15 +189,17 @@ export default function RenewalDetailsPage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <CardContent className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
               {Object.entries(documentLabels).map(([key, label]) => {
                 const documentUrl = renewal.documents[key as PassportDocumentType];
                 if (!documentUrl) return null;
                 return (
-                  <SubmittedDocumentView
+                  <DocumentPreview
                     key={key}
+                    id={renewal._id}
                     label={label}
-                    documentUrl={documentUrl}
+                    url={documentUrl}
+                    documentType={key}
                     isRequired={key !== PassportDocumentType.ADDITIONAL_DOCS}
                   />
                 );

@@ -21,6 +21,7 @@ import { DocumentUploader } from '@/components/molecules/document-uploader';
 import { SubmittedDocumentView } from '@/components/molecules/submitted-document-view';
 import { useUploadRenewalDocument, useRenewalDocument } from '@/hooks/usePassportRenewal';
 import { useToast } from '@/hooks/use-toast';
+import { DocumentPreview } from '@/components/molecules/document-preview';
 
 interface RenewalDetailViewProps {
   renewal: RenewPassportResponse;
@@ -76,44 +77,10 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
   };
 
   // Helper to render document item
-  const renderDocumentItem = (
-    label: string,
-    documentType: PassportDocumentType,
-    isRequired: boolean = true,
-  ) => {
-    const documentUrl = renewal.documents[documentType];
-    const isUploading = uploadingDocument === documentType;
-    const canUpload = renewal.status === RenewPassportStatus.PENDING;
-
-    if (documentUrl) {
-      return (
-        <SubmittedDocumentView label={label} documentUrl={documentUrl} isRequired={isRequired} />
-      );
-    }
-
+  const renderDocumentItem = (label: string, type: PassportDocumentType, isRequired = true) => {
+    const documentUrl = renewal.documents[type];
     return (
-      <div className='border rounded-lg p-4 space-y-3'>
-        <div className='flex justify-between items-center'>
-          <h3 className='font-medium text-sm'>
-            {label}
-            {isRequired && <span className='text-red-500 ml-1'>*</span>}
-          </h3>
-        </div>
-
-        {canUpload ? (
-          <DocumentUploader
-            label={`Upload ${label}`}
-            value=''
-            onChange={() => {}}
-            onFileSelect={file => handleUploadDocument(documentType, file)}
-            isLoading={isUploading && uploadingDocument === documentType}
-          />
-        ) : (
-          <div className='flex items-center justify-center h-32 bg-gray-50 border rounded-md'>
-            <p className='text-muted-foreground text-sm'>No document uploaded</p>
-          </div>
-        )}
-      </div>
+      <DocumentPreview key={type} label={label} url={documentUrl || ''} isRequired={isRequired} />
     );
   };
 

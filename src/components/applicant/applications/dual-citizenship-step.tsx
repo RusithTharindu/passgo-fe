@@ -1,5 +1,9 @@
 'use client';
 
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+
 import { UseFormReturn } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -91,10 +95,10 @@ export function DualCitizenshipStep({ form }: DualCitizenshipStepProps) {
             )}
           />
 
-          <div className='mt-6'>
+          {/* <div className='mt-6'>
             <h3 className='text-base font-medium mb-3'>Upload Dual Citizenship Certificate</h3>
             <DocumentUpload documentType={DocumentType.DUAL_CITIZENSHIP} />
-          </div>
+          </div> */}
         </div>
       )}
     </div>

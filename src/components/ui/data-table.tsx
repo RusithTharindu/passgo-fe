@@ -1,5 +1,9 @@
 'use client';
 
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+
 import * as React from 'react';
 import {
   ColumnDef,
@@ -61,7 +65,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className='space-y-4'>
       <div className='flex items-center gap-4'>
-        {searchKey && (
+        {/* {searchKey && (
           <div className='flex-1'>
             <Input
               placeholder='Search...'
@@ -70,7 +74,7 @@ export function DataTable<TData, TValue>({
               className='max-w-sm'
             />
           </div>
-        )}
+        )} */}
       </div>
 
       <div className='rounded-md border'>
