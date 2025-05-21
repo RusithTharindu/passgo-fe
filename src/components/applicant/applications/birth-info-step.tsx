@@ -7,6 +7,14 @@ import { applicationSchema } from '@/types/application';
 import { z } from 'zod';
 import { DocumentUpload } from './document-upload';
 import { DocumentType } from '@/types/application';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { SriLankaDistrict } from '@/types/applicationTypes';
 
 type FormData = z.infer<typeof applicationSchema>;
 
@@ -53,9 +61,20 @@ export function BirthInfoStep({ form }: BirthInfoStepProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Birth Certificate District</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder='e.g., Colombo' />
-              </FormControl>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Select district' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.values(SriLankaDistrict).map(district => (
+                    <SelectItem key={district} value={district}>
+                      {district}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

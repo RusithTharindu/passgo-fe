@@ -31,7 +31,7 @@ const HeaderNavigation = () => {
   const navLinks = [
     { href: '/applicant/home', label: 'Home' },
     { href: '/applicant/myActivity', label: 'My Activity' },
-    { href: '/applicant/services', label: 'Services' },
+    // { href: '/applicant/services', label: 'Services' },
     { href: '/applicant/support', label: 'Help & Support' },
   ];
 
@@ -144,7 +144,7 @@ const HeaderNavigation = () => {
       >
         <Container className='px-10'>
           <div className='py-3 space-y-3'>
-            {[...navLinks, { href: '/applicant/profile', label: 'Profile' }].map(link => (
+            {navLinks.map(link => (
               <motion.div
                 key={link.href}
                 variants={variants}

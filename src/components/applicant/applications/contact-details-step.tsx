@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CollectionLocation } from '@/types/application';
+import { CollectionLocation, SriLankaDistrict } from '@/types/applicationTypes';
 
 type FormData = z.infer<typeof applicationSchema>;
 
@@ -95,9 +95,20 @@ export function ContactDetailsStep({ form }: ContactDetailsStepProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>District</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Select district' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.values(SriLankaDistrict).map(district => (
+                    <SelectItem key={district} value={district}>
+                      {district}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

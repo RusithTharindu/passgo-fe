@@ -14,6 +14,14 @@ import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { SriLankaDistrict } from '@/types/applicationTypes';
 
 type FormData = z.infer<typeof applicationSchema>;
 
@@ -176,9 +184,20 @@ export function PersonalInfoStep({ form }: PersonalInfoStepProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Birth Certificate District</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Select district' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.values(SriLankaDistrict).map(district => (
+                    <SelectItem key={district} value={district}>
+                      {district}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
