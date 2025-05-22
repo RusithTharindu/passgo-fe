@@ -104,6 +104,8 @@ export default function RenewalDetailsPage() {
     100,
   );
 
+  const S3_BUCKET_BASE_URL = 'https://passgo-data-bucket.s3.us-east-1.amazonaws.com/';
+
   return (
     <div className='p-6 space-y-6 max-w-7xl mx-auto'>
       <div className='flex items-center justify-between'>
@@ -191,15 +193,20 @@ export default function RenewalDetailsPage() {
             </CardHeader>
             <CardContent className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
               {Object.entries(documentLabels).map(([key, label]) => {
-                const documentUrl = renewal.documents[key as PassportDocumentType];
-                if (!documentUrl) return null;
+                const relativeDocumentPath = renewal.documents[key as PassportDocumentType];
+                if (!relativeDocumentPath) return null;
+
+                // Ensure the path doesn't already start with http, in case some URLs are already absolute
+                const fullDocumentUrl = relativeDocumentPath.startsWith('http')
+                  ? relativeDocumentPath
+                  : `${S3_BUCKET_BASE_URL}${relativeDocumentPath}`;
+
                 return (
                   <DocumentPreview
                     key={key}
-                    id={renewal._id}
                     label={label}
-                    url={documentUrl}
-                    documentType={key}
+                    photoURL={fullDocumentUrl}
+                    documentType={key as PassportDocumentType}
                     isRequired={key !== PassportDocumentType.ADDITIONAL_DOCS}
                   />
                 );

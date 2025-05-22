@@ -5,73 +5,46 @@
 }
 
 import { useState } from 'react';
-import Image from 'next/image';
-import { FileText, Download, Eye, CheckCircle2, AlertTriangle } from 'lucide-react';
+import Image, { StaticImageData } from 'next/image';
+import { FileText, Download, Eye, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useRenewalDocument } from '@/hooks/usePassportRenewal';
 import { PassportDocumentType } from '@/types/passportRenewalTypes';
 
 type DocumentPreviewProps = {
-  applicationId?: string;
   label: string;
   documentType: PassportDocumentType;
   isVerified?: boolean;
   isRequired?: boolean;
   className?: string;
+  photoURL?: string | StaticImageData;
 };
 
 export function DocumentPreview({
-  applicationId,
   label,
   documentType,
   isVerified,
   isRequired = true,
   className,
+  photoURL = '/placeholder-image.jpg', // Default placeholder image
 }: DocumentPreviewProps) {
   const [showPreview, setShowPreview] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [thumbImageError, setThumbImageError] = useState(false);
+  const [popupImageError, setPopupImageError] = useState(false);
 
-  // Use the document URLs hook
-  const {
-    data,
-    isError: isUrlError,
-    isLoading,
-  } = useRenewalDocument(applicationId || '', documentType);
-
-  // Get the URL string from the response
-  const url = typeof data === 'string' ? data : data?.url;
-
-  // Determine if we have a valid image
-  const isImage = !imageError && !isUrlError && !!url;
-
-  const handleDownload = () => {
-    if (url) {
-      window.open(url, '_blank');
-    }
+  const handleThumbImageError = () => {
+    setThumbImageError(true);
+    console.error('Failed to load thumbnail image:', { label, documentType, photoURL });
   };
 
-  const handleImageError = () => {
-    setImageError(true);
-    console.error('Failed to load image:', { url, documentType });
+  const handlePopupImageError = () => {
+    setPopupImageError(true);
+    console.error('Failed to load popup image:', { label, documentType, photoURL });
   };
 
-  const renderErrorState = () => (
-    <div className='flex flex-col items-center justify-center h-full'>
-      <AlertTriangle className='h-8 w-8 text-destructive mb-2' />
-      <p className='text-sm text-muted-foreground text-center'>
-        {isUrlError ? 'Failed to get document URL' : 'Failed to load image'}
-      </p>
-      {url && (
-        <Button variant='outline' size='sm' className='mt-4' onClick={handleDownload}>
-          <Download className='h-4 w-4 mr-2' />
-          Try Download
-        </Button>
-      )}
-    </div>
-  );
+  const isValidPhotoUrl = typeof photoURL === 'string' && photoURL.trim() !== '';
 
   return (
     <div className={cn('border rounded-lg p-4 space-y-3', className)}>
@@ -93,73 +66,59 @@ export function DocumentPreview({
             variant='ghost'
             onClick={() => setShowPreview(true)}
             className='h-8 w-8'
-            disabled={!isImage}
+            disabled={!isValidPhotoUrl || thumbImageError}
           >
             <Eye className='h-4 w-4' />
           </Button>
-          <Button
-            size='icon'
-            variant='ghost'
-            onClick={handleDownload}
-            className='h-8 w-8'
-            disabled={!url}
-          >
+          {/* <Button size='icon' variant='ghost' className='h-8 w-8'>
             <Download className='h-4 w-4' />
-          </Button>
+          </Button> */}
         </div>
       </div>
 
       <div className='aspect-video relative bg-muted rounded-md overflow-hidden'>
-        {isLoading ? (
-          <div className='flex items-center justify-center h-full'>
-            <div className='animate-pulse w-12 h-12 rounded-full bg-muted-foreground/20' />
-          </div>
-        ) : isImage ? (
+        {isValidPhotoUrl && !thumbImageError ? (
           <Image
-            src={url}
-            alt={label}
+            src={photoURL}
+            alt={`${label} thumbnail`}
             fill
             className='object-cover'
             sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-            onError={handleImageError}
+            onError={handleThumbImageError}
           />
         ) : (
-          <div className='flex flex-col items-center justify-center h-full'>
-            {imageError || isUrlError ? (
-              renderErrorState()
-            ) : (
-              <>
-                <FileText className='h-8 w-8 text-muted-foreground' />
-                <p className='text-sm text-muted-foreground mt-2'>
-                  {isLoading ? 'Loading...' : 'No document uploaded'}
-                </p>
-                <p className='text-xs text-muted-foreground/80 mt-1'>
-                  Upload {label.toLowerCase()} to continue
-                </p>
-              </>
-            )}
+          <div className='flex flex-col items-center justify-center h-full text-muted-foreground'>
+            <FileText className='h-8 w-8' />
+            <p className='text-sm mt-2 text-center'>
+              {thumbImageError ? 'Error loading preview' : 'No preview available'}
+            </p>
           </div>
         )}
       </div>
 
-      {showPreview && isImage && (
+      {showPreview && isValidPhotoUrl && (
         <Dialog open={showPreview} onOpenChange={setShowPreview}>
-          <DialogContent className='max-w-4xl max-h-[90vh] overflow-hidden p-0'>
-            <DialogHeader className='p-4 border-b'>
+          <DialogContent className='max-w-3xl w-full'>
+            <DialogHeader className='pb-2'>
               <DialogTitle>{label}</DialogTitle>
             </DialogHeader>
-            <div className='relative w-full h-full p-4'>
-              <div className='relative aspect-auto w-full max-h-[70vh]'>
+            <div className='relative aspect-video w-full bg-muted rounded-md overflow-hidden'>
+              {!popupImageError ? (
                 <Image
-                  src={url}
+                  src={photoURL}
                   alt={label}
                   fill
                   className='object-contain'
-                  sizes='(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw'
-                  priority
-                  onError={handleImageError}
+                  sizes='(max-width: 768px) 100vw, 80vw'
+                  onError={handlePopupImageError}
                 />
-              </div>
+              ) : (
+                <div className='flex flex-col items-center justify-center h-full text-destructive'>
+                  <AlertTriangle className='h-10 w-10 mb-2' />
+                  <p className='text-sm font-medium'>Error loading image</p>
+                  <p className='text-xs'>The image could not be displayed.</p>
+                </div>
+              )}
             </div>
           </DialogContent>
         </Dialog>

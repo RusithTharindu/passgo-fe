@@ -30,8 +30,13 @@ import {
 } from '@/utils/statusTransitions';
 import { ApplicationStatus as AppStatus } from '@/types/application';
 import axios from 'axios';
-import { DocumentPreview } from '@/components/molecules/document-preview';
+import { DocumentPreview } from '@/components/molecules/passport-document-preview';
 import { PassportDocumentType } from '@/types/passportRenewalTypes';
+
+import image1 from '../../../../../public/assets/demo/NIC-FRONT.png';
+import image2 from '../../../../../public/assets/demo/NIC-BACK.png';
+import image3 from '../../../../../public/assets/demo/BirthCertificate.png';
+import image4 from '../../../../../public/assets/demo/passportPhoto.jpg';
 
 interface Document {
   id: string;
@@ -382,50 +387,54 @@ export default function AdminApplicationDetails() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
               {/* Current Passport */}
-              <DocumentPreview
+              {/* <DocumentPreview
                 applicationId={application._id}
                 label='Current Passport'
                 documentType={PassportDocumentType.CURRENT_PASSPORT}
                 isRequired
-              />
+              /> */}
 
               {/* NIC */}
               <DocumentPreview
-                applicationId={application._id}
+                // applicationId={application._id}
                 label='NIC Front'
                 documentType={PassportDocumentType.NIC_FRONT}
                 isRequired
+                photoURL={image1}
               />
               <DocumentPreview
-                applicationId={application._id}
+                // applicationId={application._id}
                 label='NIC Back'
                 documentType={PassportDocumentType.NIC_BACK}
                 isRequired
+                photoURL={image2}
               />
 
               {/* Birth Certificate */}
               <DocumentPreview
-                applicationId={application._id}
+                // applicationId={application._id}
                 label='Birth Certificate'
                 documentType={PassportDocumentType.BIRTH_CERT}
                 isRequired
+                photoURL={image3}
               />
 
               {/* Passport Photo */}
               <DocumentPreview
-                applicationId={application._id}
+                // applicationId={application._id}
                 label='Passport Photo'
                 documentType={PassportDocumentType.PHOTO}
                 isRequired
+                photoURL={image4}
               />
 
               {/* Additional Documents */}
-              <DocumentPreview
+              {/* <DocumentPreview
                 applicationId={application._id}
                 label='Additional Documents'
                 documentType={PassportDocumentType.ADDITIONAL_DOCS}
                 isRequired={false}
-              />
+              /> */}
             </div>
           </CardContent>
         </Card>

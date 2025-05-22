@@ -102,120 +102,120 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
           <p className='text-muted-foreground'>ID: {renewal._id}</p>
         </div>
 
-        <Tabs defaultValue='details' value={activeTab} onValueChange={setActiveTab} className='p-4'>
+        {/* <Tabs defaultValue='details' value={activeTab} onValueChange={setActiveTab} className='p-4'>
           <TabsList className='mb-4'>
             <TabsTrigger value='details'>Details</TabsTrigger>
             <TabsTrigger value='documents'>Documents</TabsTrigger>
-          </TabsList>
+          </TabsList> */}
 
-          <TabsContent value='details' className='space-y-6'>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-              <div className='space-y-4'>
-                <h3 className='font-medium text-base'>Personal Information</h3>
+        <div className='space-y-6 p-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+            <div className='space-y-4'>
+              <h3 className='font-medium text-base'>Personal Information</h3>
 
-                <div className='space-y-3'>
-                  <div className='grid grid-cols-2 gap-2'>
-                    <div>
-                      <p className='text-sm text-muted-foreground'>Full Name</p>
-                      <p className='font-medium'>{renewal.fullName}</p>
-                    </div>
-                    <div>
-                      <p className='text-sm text-muted-foreground'>NIC Number</p>
-                      <p className='font-medium'>{renewal.nicNumber}</p>
-                    </div>
-                  </div>
-
+              <div className='space-y-3'>
+                <div className='grid grid-cols-2 gap-2'>
                   <div>
-                    <p className='text-sm text-muted-foreground'>Date of Birth</p>
-                    <p className='font-medium'>{format(dateOfBirth, 'PPP')}</p>
+                    <p className='text-sm text-muted-foreground'>Full Name</p>
+                    <p className='font-medium'>{renewal.fullName}</p>
                   </div>
-
                   <div>
-                    <p className='text-sm text-muted-foreground'>Address</p>
-                    <p className='font-medium'>{renewal.address}</p>
-                  </div>
-
-                  <div className='grid grid-cols-2 gap-2'>
-                    <div>
-                      <p className='text-sm text-muted-foreground'>Contact Number</p>
-                      <p className='font-medium'>{renewal.contactNumber}</p>
-                    </div>
-                    <div>
-                      <p className='text-sm text-muted-foreground'>Email</p>
-                      <p className='font-medium'>{renewal.email}</p>
-                    </div>
+                    <p className='text-sm text-muted-foreground'>NIC Number</p>
+                    <p className='font-medium'>{renewal.nicNumber}</p>
                   </div>
                 </div>
-              </div>
 
-              <div className='space-y-4'>
-                <h3 className='font-medium text-base'>Passport Information</h3>
+                <div>
+                  <p className='text-sm text-muted-foreground'>Date of Birth</p>
+                  <p className='font-medium'>{format(dateOfBirth, 'PPP')}</p>
+                </div>
 
-                <div className='space-y-3'>
+                <div>
+                  <p className='text-sm text-muted-foreground'>Address</p>
+                  <p className='font-medium'>{renewal.address}</p>
+                </div>
+
+                <div className='grid grid-cols-2 gap-2'>
                   <div>
-                    <p className='text-sm text-muted-foreground'>Current Passport Number</p>
-                    <p className='font-medium'>{renewal.currentPassportNumber}</p>
+                    <p className='text-sm text-muted-foreground'>Contact Number</p>
+                    <p className='font-medium'>{renewal.contactNumber}</p>
                   </div>
-
                   <div>
-                    <p className='text-sm text-muted-foreground'>Current Passport Expiry Date</p>
-                    <p className='font-medium'>{format(expiryDate, 'PPP')}</p>
+                    <p className='text-sm text-muted-foreground'>Email</p>
+                    <p className='font-medium'>{renewal.email}</p>
                   </div>
-
-                  <h3 className='font-medium text-base mt-6'>Request Information</h3>
-
-                  <div className='grid grid-cols-2 gap-2'>
-                    <div>
-                      <p className='text-sm text-muted-foreground'>Created Date</p>
-                      <p className='font-medium'>{format(createdDate, 'PPP')}</p>
-                    </div>
-                    <div>
-                      <p className='text-sm text-muted-foreground'>Last Updated</p>
-                      <p className='font-medium'>{format(updatedDate, 'PPP pp')}</p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className='text-sm text-muted-foreground'>Document Completeness</p>
-                    <div className='flex items-center gap-2'>
-                      <div className='h-2 w-full bg-gray-100 rounded-full overflow-hidden'>
-                        <div
-                          className='h-full bg-primary'
-                          style={{ width: `${documentCompleteness}%` }}
-                        />
-                      </div>
-                      <span className='text-xs'>{documentCompleteness}%</span>
-                    </div>
-                  </div>
-
-                  {renewal.status === RenewPassportStatus.VERIFIED && (
-                    <div className='bg-green-50 p-3 rounded text-sm border border-green-100'>
-                      <div className='flex'>
-                        <CheckCircle2 className='h-4 w-4 text-green-500 mt-0.5 mr-2' />
-                        <div>
-                          <p className='font-medium text-green-700'>
-                            Verified on {format(updatedDate, 'PPP pp')}
-                          </p>
-                          <p className='text-green-600'>
-                            By: {renewal.userId.firstName} {renewal.userId.lastName}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {renewal.status === RenewPassportStatus.REJECTED && renewal.adminRemarks && (
-                    <div className='bg-red-50 p-3 rounded text-sm border border-red-100'>
-                      <p className='font-medium text-red-700'>Rejection Reason:</p>
-                      <p className='text-red-600'>{renewal.adminRemarks}</p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
-          </TabsContent>
 
-          <TabsContent value='documents' className='space-y-6'>
+            <div className='space-y-4'>
+              <h3 className='font-medium text-base'>Passport Information</h3>
+
+              <div className='space-y-3'>
+                <div>
+                  <p className='text-sm text-muted-foreground'>Current Passport Number</p>
+                  <p className='font-medium'>{renewal.currentPassportNumber}</p>
+                </div>
+
+                <div>
+                  <p className='text-sm text-muted-foreground'>Current Passport Expiry Date</p>
+                  <p className='font-medium'>{format(expiryDate, 'PPP')}</p>
+                </div>
+
+                <h3 className='font-medium text-base mt-6'>Request Information</h3>
+
+                <div className='grid grid-cols-2 gap-2'>
+                  <div>
+                    <p className='text-sm text-muted-foreground'>Created Date</p>
+                    <p className='font-medium'>{format(createdDate, 'PPP')}</p>
+                  </div>
+                  <div>
+                    <p className='text-sm text-muted-foreground'>Last Updated</p>
+                    <p className='font-medium'>{format(updatedDate, 'PPP pp')}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className='text-sm text-muted-foreground'>Document Completeness</p>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-2 w-full bg-gray-100 rounded-full overflow-hidden'>
+                      <div
+                        className='h-full bg-primary'
+                        style={{ width: `${documentCompleteness}%` }}
+                      />
+                    </div>
+                    <span className='text-xs'>{documentCompleteness}%</span>
+                  </div>
+                </div>
+
+                {renewal.status === RenewPassportStatus.VERIFIED && (
+                  <div className='bg-green-50 p-3 rounded text-sm border border-green-100'>
+                    <div className='flex'>
+                      <CheckCircle2 className='h-4 w-4 text-green-500 mt-0.5 mr-2' />
+                      <div>
+                        <p className='font-medium text-green-700'>
+                          Verified on {format(updatedDate, 'PPP pp')}
+                        </p>
+                        <p className='text-green-600'>
+                          By: {renewal.userId.firstName} {renewal.userId.lastName}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {renewal.status === RenewPassportStatus.REJECTED && renewal.adminRemarks && (
+                  <div className='bg-red-50 p-3 rounded text-sm border border-red-100'>
+                    <p className='font-medium text-red-700'>Rejection Reason:</p>
+                    <p className='text-red-600'>{renewal.adminRemarks}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* <TabsContent value='documents' className='space-y-6'>
             {documentCompleteness < 100 && renewal.status === RenewPassportStatus.PENDING && (
               <div className='bg-amber-50 p-4 rounded-md border border-amber-100 mb-4'>
                 <h3 className='font-medium text-amber-800'>Documents Required</h3>
@@ -237,8 +237,8 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
                 false,
               )}
             </div>
-          </TabsContent>
-        </Tabs>
+          </TabsContent> */}
+        {/* </Tabs> */}
       </div>
     </div>
   );

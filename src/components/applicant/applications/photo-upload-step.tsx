@@ -1,17 +1,16 @@
 'use client';
 
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { applicationSchema } from '@/types/application';
 import { z } from 'zod';
-import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 import { useDropzone } from 'react-dropzone';
-import { Upload, X, Check } from 'lucide-react';
 import Image from 'next/image';
-import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 
 type FormData = z.infer<typeof applicationSchema>;
@@ -112,10 +111,7 @@ export function PhotoUploadStep({ form }: PhotoUploadStepProps) {
   return (
     <div className='space-y-6'>
       <div className='mb-8'>
-        <h2 className='text-xl font-semibold mb-2'>Photo Upload</h2>
-        <p className='text-muted-foreground'>
-          Upload a passport-sized photo that meets the official requirements
-        </p>
+        <h2 className='text-xl font-semibold mb-2'>Photo Upload Instructions</h2>
       </div>
 
       <Alert className='mb-6'>
@@ -133,7 +129,7 @@ export function PhotoUploadStep({ form }: PhotoUploadStepProps) {
         </AlertDescription>
       </Alert>
 
-      <FormField
+      {/* <FormField
         control={form.control}
         name='userPhoto'
         render={() => (
@@ -194,7 +190,7 @@ export function PhotoUploadStep({ form }: PhotoUploadStepProps) {
             <FormMessage />
           </FormItem>
         )}
-      />
+      /> */}
     </div>
   );
 }
