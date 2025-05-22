@@ -19,35 +19,70 @@ import { DualCitizenshipStep } from './dual-citizenship-step';
 import { ChildInfoStep } from './child-info-step';
 import { PhotoUploadStep } from './photo-upload-step';
 import { DeclarationStep } from './declaration-step';
-import { CollectionLocation } from '@/types/application';
-import { Loader2 } from 'lucide-react';
-import { useApplicationSubmit } from '@/hooks/useApplication';
+import { CollectionLocation, ApplicationStatus } from '@/types/application';
+import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { useApplicationSubmit, useUpdateUserApplication } from '@/hooks/useApplication';
+import { DocumentUploader } from '@/components/molecules/document-uploader';
+import axios from 'axios';
+import AxiosInstance from '@/utils/helpers/axiosApi';
 
 type FormData = z.infer<typeof applicationSchema>;
 
+interface DocumentUrls {
+  [key: string]: string;
+}
+
+export enum PassportDocumentType {
+  CURRENT_PASSPORT = 'current-passport',
+  NIC_FRONT = 'nic-front',
+  NIC_BACK = 'nic-back',
+  BIRTH_CERT = 'birth-certificate',
+  PHOTO = 'passport-photo',
+  ADDITIONAL_DOCS = 'additional-documents',
+}
+
+// Map Document Type to display name for UI
+const documentTypeToLabel: Record<string, string> = {
+  [PassportDocumentType.NIC_FRONT]: 'NIC Front',
+  [PassportDocumentType.NIC_BACK]: 'NIC Back',
+  [PassportDocumentType.BIRTH_CERT]: 'Birth Certificate',
+  [PassportDocumentType.PHOTO]: 'Passport Photo',
+  [PassportDocumentType.ADDITIONAL_DOCS]: 'Additional Documents',
+};
+
 const steps = [
-  { title: 'Service Type', description: 'Type of service' },
-  { title: 'Personal Information', description: 'Your personal details' },
-  { title: 'Birth Certificate', description: 'Birth certificate details' },
-  { title: 'Contact Information', description: 'Your contact information' },
-  { title: 'Dual Citizenship', description: 'Dual citizenship details' },
-  { title: 'Child Information', description: 'Child details if applicable' },
-  { title: 'Photo Upload', description: 'Upload your passport photo' },
-  { title: 'Declaration', description: 'Terms and conditions' },
+  { title: 'Service Details', description: 'Choose your passport service' },
+  { title: 'Personal Information', description: 'Your basic information' },
+  { title: 'Birth Information', description: 'Birth certificate details' },
+  { title: 'Contact Details', description: 'How to reach you' },
+  { title: 'Dual Citizenship', description: 'Citizenship status' },
+  { title: 'Child Information', description: 'For minors only' },
+  { title: 'Photo Upload', description: 'Your passport photo' },
+  { title: 'Declaration', description: 'Final submission' },
+  { title: 'Upload Documents', description: 'Required documents for verification' },
 ];
 
 export function MainApplicationForm() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [applicationId, setApplicationId] = useState<string | null>();
+  const [uploadStep, setUploadStep] = useState<PassportDocumentType | null>(null);
+  const [documentUrls, setDocumentUrls] = useState<DocumentUrls>({});
+  const [isSubmittingDocs, setIsSubmittingDocs] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
-  const { mutate: submitApplication, isPending } = useApplicationSubmit();
+  console.log(documentUrls);
+
+  const { mutate: submitApplication, isPending: isCreating } = useApplicationSubmit();
+  const { mutate: updateApplication, isPending: isUpdating } = useUpdateUserApplication();
 
   const form = useForm<FormData>({
     resolver: zodResolver(applicationSchema),
     defaultValues: {
       typeOfService: 'normal',
       TypeofTravelDocument: 'all',
+      presentTravelDocument: '',
+      nmrpNumber: '',
       nationalIdentityCardNumber: '',
       surname: '',
       otherNames: '',
@@ -144,10 +179,11 @@ export function MainApplicationForm() {
       } else if (currentStep === 5 && !isChild) {
         // Skip child information step if not applicable
         setCurrentStep(prev => prev + 2);
+      } else if (currentStep === 7) {
+        // If we're on the declaration step, submit the form before going to document upload
+        handleSubmit();
       } else if (currentStep < steps.length - 1) {
         setCurrentStep(prev => prev + 1);
-      } else {
-        handleSubmit();
       }
 
       // Scroll to top
@@ -173,24 +209,253 @@ export function MainApplicationForm() {
   const handleSubmit = () => {
     const formData = form.getValues();
 
-    submitApplication(formData, {
-      onSuccess: data => {
+    // Initialize with empty documents object
+    const payload = {
+      ...formData,
+      documents: {},
+    };
+
+    submitApplication(payload, {
+      onSuccess: response => {
+        // Store the application ID
+        const newApplicationId = response._id;
+        console.log('Application created with ID:', newApplicationId);
+        setApplicationId(newApplicationId);
+
         toast({
           title: 'Application Submitted',
-          description: 'Your passport application has been submitted successfully.',
+          description:
+            'Your application has been submitted successfully. Please upload required documents.',
         });
 
-        // Redirect to application details page
-        router.push(`/applicant/applications/${data.id}`);
+        // Move to document upload step
+        setCurrentStep(8);
       },
-      onError: () => {
+      onError: error => {
         toast({
+          title: 'Error',
+          description: 'There was a problem submitting your application. Please try again.',
           variant: 'destructive',
-          title: 'Submission Failed',
-          description: 'There was an error submitting your application. Please try again.',
         });
+        console.error('Application submission error:', error);
       },
     });
+  };
+
+  // Function to upload a single document
+  const handleFileSelect = async (documentType: PassportDocumentType, file: File) => {
+    if (!applicationId) {
+      toast({
+        title: 'Error',
+        description: 'You must submit the form first before uploading documents.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploadStep(documentType);
+
+    try {
+      // Create a FormData object
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Upload directly to the endpoint
+      const response = await AxiosInstance.post(
+        `${process.env.NEXT_PUBLIC_API_URL}application/upload-document/${documentType}?applicationId=${applicationId}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
+      // Get the returned presigned URL
+      const presignedUrl = response.data.url;
+      console.log(`Document uploaded. Type: ${documentType}, URL: ${presignedUrl}`);
+
+      // Update local state with the new URL
+      setDocumentUrls(prev => ({
+        ...prev,
+        [documentType]: presignedUrl,
+      }));
+
+      try {
+        // Get current application to retrieve existing documents
+        const getCurrentApp = await AxiosInstance.get(
+          `${process.env.NEXT_PUBLIC_API_URL}application/${applicationId}`,
+        );
+
+        // Get existing documents array or initialize empty array
+        const existingDocs = Array.isArray(getCurrentApp.data.documents)
+          ? getCurrentApp.data.documents
+          : [];
+
+        // Create a new array with all documents including the new one
+        const updatedDocs = [...existingDocs, presignedUrl];
+
+        // Update the application with the new document array
+        updateApplication(
+          {
+            id: applicationId,
+            data: {
+              documents: updatedDocs,
+            },
+          },
+          {
+            onSuccess: () => {
+              console.log(`Document ${documentType} updated successfully`);
+              toast({
+                title: 'Success',
+                description: 'Document uploaded successfully.',
+              });
+            },
+            onError: error => {
+              console.error(`Error updating document ${documentType}:`, error);
+              toast({
+                title: 'Error',
+                description: 'Failed to update application with document. Please try again.',
+                variant: 'destructive',
+              });
+            },
+          },
+        );
+      } catch (error) {
+        console.error('Error retrieving or updating application:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to update application with document. Please try again.',
+          variant: 'destructive',
+        });
+      }
+
+      setUploadStep(null);
+    } catch (error) {
+      console.error('Document upload error:', error);
+      setUploadStep(null);
+
+      toast({
+        title: 'Error',
+        description: 'Failed to upload document. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const completeApplication = async () => {
+    if (!applicationId) {
+      toast({
+        title: 'Error',
+        description: 'Application ID not found.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsSubmittingDocs(true);
+
+    // Check if required documents are uploaded
+    const requiredDocuments = [
+      PassportDocumentType.NIC_FRONT,
+      PassportDocumentType.NIC_BACK,
+      PassportDocumentType.BIRTH_CERT,
+      PassportDocumentType.PHOTO,
+    ];
+
+    const missingDocuments = requiredDocuments.filter(docType => !documentUrls[docType]);
+
+    if (missingDocuments.length > 0) {
+      const missingDocLabels = missingDocuments.map(
+        docType => documentTypeToLabel[docType] || docType,
+      );
+      toast({
+        title: 'Missing Documents',
+        description: `Please upload the following required documents: ${missingDocLabels.join(', ')}`,
+        variant: 'destructive',
+      });
+      setIsSubmittingDocs(false);
+      return;
+    }
+
+    // If user is dual citizen, check for dual citizenship document
+    if (form.getValues('isDualCitizen') && !documentUrls[PassportDocumentType.ADDITIONAL_DOCS]) {
+      toast({
+        title: 'Missing Documents',
+        description: 'Please upload your Dual Citizenship Certificate',
+        variant: 'destructive',
+      });
+      setIsSubmittingDocs(false);
+      return;
+    }
+
+    try {
+      // Get current application to retrieve existing documents
+      const getCurrentApp = await AxiosInstance.get(
+        `${process.env.NEXT_PUBLIC_API_URL}application/${applicationId}`,
+      );
+
+      // Get existing documents array or initialize empty array
+      const existingDocs = Array.isArray(getCurrentApp.data.documents)
+        ? getCurrentApp.data.documents
+        : [];
+
+      // Make sure we're not adding duplicates
+      const newDocURLs = Object.values(documentUrls).filter(
+        url => url && !existingDocs.includes(url),
+      );
+
+      // Combine existing docs with new ones
+      const allDocs = [...existingDocs, ...newDocURLs];
+
+      // Update the application status to complete the document submission process
+      updateApplication(
+        {
+          id: applicationId,
+          data: {
+            status: ApplicationStatus.DOCUMENT_VERIFICATION,
+            documents: allDocs,
+          },
+        },
+        {
+          onSuccess: () => {
+            setIsSubmittingDocs(false);
+            // Try to send an email confirmation
+            try {
+              axios.post('/api/application/send-confirmation', {
+                applicationId,
+                email: form.getValues('emailAddress'),
+              });
+            } catch (error) {
+              console.error('Failed to send confirmation email:', error);
+            }
+
+            toast({
+              title: 'Application Complete',
+              description: 'Your application and documents have been successfully submitted.',
+            });
+            router.push('/applicant/applications');
+          },
+          onError: error => {
+            setIsSubmittingDocs(false);
+            toast({
+              title: 'Error',
+              description: 'Failed to complete application. Please try again.',
+              variant: 'destructive',
+            });
+            console.error('Error completing application:', error);
+          },
+        },
+      );
+    } catch (error) {
+      console.error('Error completing application:', error);
+      setIsSubmittingDocs(false);
+      toast({
+        title: 'Error',
+        description: 'Failed to complete application. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const renderStepContent = () => {
@@ -211,6 +476,158 @@ export function MainApplicationForm() {
         return <PhotoUploadStep form={form} />;
       case 7:
         return <DeclarationStep form={form} />;
+      case 8:
+        return (
+          <div className='space-y-6'>
+            <div className='bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6'>
+              <h3 className='text-lg font-medium text-blue-800 mb-2'>
+                Document Upload Instructions
+              </h3>
+              <p className='text-sm text-blue-700'>
+                Please upload clear scans or photos of the following documents. All documents should
+                be in JPG, PNG, or PDF format.
+              </p>
+            </div>
+
+            {/* Document status summary */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg mb-6'>
+              <div className='flex items-center gap-2'>
+                <span className='text-sm font-medium'>NIC (Front):</span>
+                {documentUrls[PassportDocumentType.NIC_FRONT] ? (
+                  <CheckCircle className='h-4 w-4 text-green-500' />
+                ) : (
+                  <AlertCircle className='h-4 w-4 text-amber-500' />
+                )}
+              </div>
+              <div className='flex items-center gap-2'>
+                <span className='text-sm font-medium'>NIC (Back):</span>
+                {documentUrls[PassportDocumentType.NIC_BACK] ? (
+                  <CheckCircle className='h-4 w-4 text-green-500' />
+                ) : (
+                  <AlertCircle className='h-4 w-4 text-amber-500' />
+                )}
+              </div>
+              <div className='flex items-center gap-2'>
+                <span className='text-sm font-medium'>Birth Certificate:</span>
+                {documentUrls[PassportDocumentType.BIRTH_CERT] ? (
+                  <CheckCircle className='h-4 w-4 text-green-500' />
+                ) : (
+                  <AlertCircle className='h-4 w-4 text-amber-500' />
+                )}
+              </div>
+              <div className='flex items-center gap-2'>
+                <span className='text-sm font-medium'>Passport Photo:</span>
+                {documentUrls[PassportDocumentType.PHOTO] ? (
+                  <CheckCircle className='h-4 w-4 text-green-500' />
+                ) : (
+                  <AlertCircle className='h-4 w-4 text-amber-500' />
+                )}
+              </div>
+              {isDualCitizen && (
+                <div className='flex items-center gap-2'>
+                  <span className='text-sm font-medium'>Dual Citizenship:</span>
+                  {documentUrls[PassportDocumentType.ADDITIONAL_DOCS] ? (
+                    <CheckCircle className='h-4 w-4 text-green-500' />
+                  ) : (
+                    <AlertCircle className='h-4 w-4 text-amber-500' />
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <div>
+                <h3 className='text-base font-medium mb-2'>NIC (Front)</h3>
+                <DocumentUploader
+                  label='Upload front of your NIC'
+                  value={documentUrls[PassportDocumentType.NIC_FRONT] || ''}
+                  onChange={(value: string) =>
+                    setDocumentUrls(prev => ({ ...prev, [PassportDocumentType.NIC_FRONT]: value }))
+                  }
+                  onFileSelect={(file: File) =>
+                    handleFileSelect(PassportDocumentType.NIC_FRONT, file)
+                  }
+                  accept='image/png,image/jpeg,image/jpg,application/pdf'
+                  isLoading={uploadStep === PassportDocumentType.NIC_FRONT}
+                />
+              </div>
+              <div>
+                <h3 className='text-base font-medium mb-2'>NIC (Back)</h3>
+                <DocumentUploader
+                  label='Upload back of your NIC'
+                  value={documentUrls[PassportDocumentType.NIC_BACK] || ''}
+                  onChange={(value: string) =>
+                    setDocumentUrls(prev => ({ ...prev, [PassportDocumentType.NIC_BACK]: value }))
+                  }
+                  onFileSelect={(file: File) =>
+                    handleFileSelect(PassportDocumentType.NIC_BACK, file)
+                  }
+                  accept='image/png,image/jpeg,image/jpg,application/pdf'
+                  isLoading={uploadStep === PassportDocumentType.NIC_BACK}
+                />
+              </div>
+            </div>
+
+            <div className='grid grid-cols-1 md:grid-cols-1 gap-6 mt-6'>
+              <div>
+                <h3 className='text-base font-medium mb-2'>Birth Certificate</h3>
+                <DocumentUploader
+                  label='Upload your birth certificate'
+                  value={documentUrls[PassportDocumentType.BIRTH_CERT] || ''}
+                  onChange={(value: string) =>
+                    setDocumentUrls(prev => ({
+                      ...prev,
+                      [PassportDocumentType.BIRTH_CERT]: value,
+                    }))
+                  }
+                  onFileSelect={(file: File) =>
+                    handleFileSelect(PassportDocumentType.BIRTH_CERT, file)
+                  }
+                  accept='image/png,image/jpeg,image/jpg,application/pdf'
+                  isLoading={uploadStep === PassportDocumentType.BIRTH_CERT}
+                />
+              </div>
+            </div>
+
+            <div className='mt-6'>
+              <h3 className='text-base font-medium mb-2'>Passport Photo</h3>
+              <DocumentUploader
+                label='Upload your passport photo'
+                value={documentUrls[PassportDocumentType.PHOTO] || ''}
+                onChange={(value: string) =>
+                  setDocumentUrls(prev => ({
+                    ...prev,
+                    [PassportDocumentType.PHOTO]: value,
+                  }))
+                }
+                onFileSelect={(file: File) => handleFileSelect(PassportDocumentType.PHOTO, file)}
+                accept='image/png,image/jpeg,image/jpg'
+                isLoading={uploadStep === PassportDocumentType.PHOTO}
+              />
+            </div>
+
+            {form.getValues('isDualCitizen') && (
+              <div className='mt-6'>
+                <h3 className='text-base font-medium mb-2'>Dual Citizenship Certificate</h3>
+                <DocumentUploader
+                  label='Upload your dual citizenship certificate'
+                  value={documentUrls[PassportDocumentType.ADDITIONAL_DOCS] || ''}
+                  onChange={(value: string) =>
+                    setDocumentUrls(prev => ({
+                      ...prev,
+                      [PassportDocumentType.ADDITIONAL_DOCS]: value,
+                    }))
+                  }
+                  onFileSelect={(file: File) =>
+                    handleFileSelect(PassportDocumentType.ADDITIONAL_DOCS, file)
+                  }
+                  accept='image/png,image/jpeg,image/jpg,application/pdf'
+                  isLoading={uploadStep === PassportDocumentType.ADDITIONAL_DOCS}
+                />
+              </div>
+            )}
+          </div>
+        );
       default:
         return null;
     }
@@ -242,23 +659,40 @@ export function MainApplicationForm() {
             type='button'
             variant='outline'
             onClick={prevStep}
-            disabled={currentStep === 0 || isPending}
+            disabled={currentStep === 0 || isCreating || isSubmittingDocs}
           >
             Previous
           </Button>
 
-          <Button type='button' onClick={nextStep} disabled={isPending}>
-            {isPending ? (
-              <>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                Submitting...
-              </>
-            ) : currentStep === steps.length - 1 ? (
-              'Submit Application'
-            ) : (
-              'Next'
-            )}
-          </Button>
+          {currentStep === 8 ? (
+            <Button
+              type='button'
+              onClick={completeApplication}
+              disabled={isSubmittingDocs || uploadStep !== null || isUpdating}
+            >
+              {isSubmittingDocs ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Completing Application...
+                </>
+              ) : (
+                'Complete Application'
+              )}
+            </Button>
+          ) : (
+            <Button type='button' onClick={nextStep} disabled={isCreating}>
+              {isCreating ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Submitting...
+                </>
+              ) : currentStep === 7 ? (
+                'Submit Application'
+              ) : (
+                'Next'
+              )}
+            </Button>
+          )}
         </CardFooter>
       </Card>
     </div>

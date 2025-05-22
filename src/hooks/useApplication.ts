@@ -13,6 +13,8 @@ import { UpdateApplicationPayload } from '@/types/applicationTypes';
 import { applicationApi } from '@/api/application';
 import { Application, DocumentType } from '@/types/application';
 import axios from 'axios';
+import AxiosInstance from '@/utils/helpers/axiosApi';
+import { applicationEndpoints } from '@/api/common/ApiEndPoints';
 
 export const useCreateApplication = () => {
   return useMutation({
@@ -132,5 +134,47 @@ export function useDocumentUpload() {
   return useMutation({
     mutationFn: ({ documentType, file }: { documentType: DocumentType; file: File }) =>
       applicationApi.uploadDocument(documentType, file),
+  });
+}
+
+export function useUploadApplicationDocument() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      documentType,
+      file,
+      applicationId,
+    }: {
+      documentType: DocumentType;
+      file: File;
+      applicationId: string;
+    }) => {
+      if (!applicationId) {
+        throw new Error('Cannot upload document: Application ID is required');
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Use the defined endpoint from ApiEndPoints
+      const response = await AxiosInstance.post(
+        applicationEndpoints.uploadDocument(applicationId, documentType),
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      // Invalidate relevant queries to refresh the application data
+      queryClient.invalidateQueries({
+        queryKey: ['application', variables.applicationId],
+      });
+    },
   });
 }

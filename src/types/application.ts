@@ -32,6 +32,14 @@ export const DocumentType = {
   DUAL_CITIZENSHIP: 'dual_citizenship',
 } as const;
 
+export type NewPassportDocumentType = {
+  NIC_FRONT: 'nic-front';
+  NIC_BACK: 'nic-back';
+  BIRTH_CERTIFICATE: 'birth-certificate';
+  PASSPORT_PHOTO: 'passport-photo';
+  ADDITIONAL_DOCUMENTS: 'additional-documents';
+};
+
 export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType];
 
 export interface DocumentVerification {
@@ -83,12 +91,13 @@ export interface Application {
   adminNotes?: string;
   createdAt: string;
   rejectionReason?: string;
-  documents: Array<{
-    id: string;
-    name: string;
-    url: string;
-    type: string;
-  }>;
+  // documents: Array<{
+  //   id: string;
+  //   name: string;
+  //   url: string;
+  //   type: string;
+  // }>;
+  documents?: string[];
   nicPhotos: {
     front?: string;
     back?: string;
