@@ -52,7 +52,7 @@ export function DataTable({ data, onRowClick }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState<string>('');
 
   const table = useReactTable({
     data,
@@ -92,7 +92,7 @@ export function DataTable({ data, onRowClick }: DataTableProps) {
       <div className='flex items-center gap-4'>
         <Input
           placeholder='Search by name, NIC, or appointment ID...'
-          value={globalFilter ?? ''}
+          value={globalFilter}
           onChange={event => setGlobalFilter(event.target.value)}
           className='max-w-sm'
         />

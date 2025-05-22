@@ -1,97 +1,162 @@
-# PassGo - Sri Lankan Passport Application Portal
+# PassGo - Passport Application Management System
 
-## Overview
-
-PassGo is a modern web application designed to streamline the Sri Lankan passport application process. It provides a user-friendly interface for submitting and validating passport applications online, making the process more efficient and accessible for Sri Lankan citizens.
+PassGo is a modern web application built with Next.js 14, TypeScript, and Tailwind CSS that streamlines the passport application and management process.
 
 ## Features
 
-- **User Authentication**
+### For Applicants
 
-  - Secure login and registration system
-  - Email validation
-  - Password recovery options
+#### Passport Application
 
-- **Application Process**
-  - Online passport application submission
-  - Document validation
-  - Real-time application status tracking
-  - Secure document handling
+- **New Application Submission**
+  - Step-by-step form wizard interface
+  - Service type selection (Normal/One Day)
+  - Travel document type selection
+  - Personal information collection
+  - Birth information and documentation
+  - Contact details
+  - Dual citizenship handling
+  - Child passport application support
+  - Photo upload with guidelines
+  - Document uploads (NIC, Birth Certificate)
+  - Collection location selection
+  - Declaration and terms acceptance
 
-## Tech Stack
+#### Application Management
 
-- **Frontend Framework**: Next.js 15
+- **Application Tracking**
+  - Real-time status updates
+  - Visual timeline of application progress
+  - Email notifications for status changes
+  - View application details and history
+  - Download submitted documents
+
+#### Appointment System
+
+- **Appointment Booking**
+  - Schedule appointments for document verification
+  - Select preferred date and time
+  - Choose convenient location
+  - Receive email confirmations
+  - Reschedule or cancel appointments
+  - View upcoming appointments
+
+### For Administrators
+
+#### Application Management
+
+- **Application Processing**
+  - View all applications
+  - Filter and search applications
+  - Update application status
+  - Add admin notes
+  - Process rejections with reasons
+  - Track application progress
+  - Send email notifications to applicants
+
+#### Appointment Management
+
+- **Appointment Handling**
+  - View all scheduled appointments
+  - Approve/reject appointment requests
+  - Manage time slots availability
+  - Send confirmation emails
+  - Track appointment attendance
+
+#### Document Verification
+
+- **Document Processing**
+  - Verify uploaded documents
+  - Request additional documents
+  - Mark documents as verified
+  - Track document verification status
+
+### System Features
+
+#### Authentication & Security
+
+- Secure user authentication
+- Role-based access control
+- Protected API routes
+- Session management
+- Password reset functionality
+
+#### User Interface
+
+- Responsive design
+- Dark/Light mode support
+- Loading states and animations
+- Error handling and validation
+- Toast notifications
+- Modal confirmations
+
+#### Email Notifications
+
+- Application submission confirmation
+- Status update notifications
+- Appointment confirmations
+- Document verification reminders
+- Collection readiness alerts
+
+## Technical Stack
+
+- **Frontend Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
-- **Styling**: TailwindCSS
-- **Form Handling**: React Hook Form with Zod validation
-- **UI Components**: Shadcn/ui
-- **State Management**: TanStack Query
-- **HTTP Client**: Axios
-- **Package Manager**: pnpm
+- **Styling**: Tailwind CSS
+- **UI Components**: Shadcn UI
+- **State Management**: React Query, Zustand
+- **Form Handling**: React Hook Form, Zod
+- **Authentication**: JWT
+- **Email Service**: Nodemailer
+- **File Upload**: Multi-part form data
 
 ## Getting Started
 
-### Prerequisites
+1. **Prerequisites**
 
-- Node.js (v20 or later)
-- pnpm (v8 or later)
+   ```bash
+   Node.js 18+
+   pnpm
+   ```
 
-### Installation
+2. **Installation**
 
-1. Clone the repository
+   ```bash
+   git clone <repository-url>
+   cd passgo-fe
+   pnpm install
+   ```
 
-```bash
-git clone https://github.com/your-username/passgo-fe.git
-cd passgo-fe
+3. **Environment Setup**
+   Create a `.env.local` file:
+
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:5000/api
+   GMAIL_USER=your-email@gmail.com
+   GMAIL_APP_PASSWORD=your-app-specific-password
+   ```
+
+4. **Development**
+
+   ```bash
+   pnpm dev
+   ```
+
+5. **Build**
+   ```bash
+   pnpm build
+   pnpm start
+   ```
+
+## Project Structure
+
 ```
-
-2. Install dependencies
-
-```bash
-pnpm install
+src/
+├── app/                    # Next.js app router pages
+├── components/            # Reusable components
+├── hooks/                # Custom React hooks
+├── api/                  # API integration
+├── types/               # TypeScript types/interfaces
+├── utils/               # Utility functions
+└── styles/              # Global styles
 ```
-
-3. Create a `.env.local` file in the root directory and add necessary environment variables
-
-```env
-NEXT_PUBLIC_API_URL=your_api_url_here
-```
-
-4. Start the development server
-
-```bash
-pnpm dev
-```
-
-The application will be available at `http://passgo-fe.vercel.app`
-
-### Build for Production
-
-```bash
-pnpm build
-pnpm start
-```
-
-## Development
-
-### Code Style
-
-The project uses ESLint and Prettier for code formatting. Format your code using:
-
-```bash
-pnpm format
-```
-
-### Linting
-
-Run the linter with:
-
-```bash
-pnpm lint
-```
-
-## Acknowledgments
-
-- Department of Immigration and Emigration, Sri Lanka
-- Next.js team for the amazing framework
-- Shadcn for the beautiful UI components
