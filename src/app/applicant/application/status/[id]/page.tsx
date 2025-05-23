@@ -105,7 +105,6 @@ const getStatusVariant = (status: ApplicationStatus) => {
   }
 };
 
-// Format status for display
 const formatStatus = (status: ApplicationStatus) => {
   return status
     .replace(/_/g, ' ')
@@ -123,17 +122,14 @@ export default function ApplicationStatusDetail() {
     const fetchApplication = async () => {
       setIsLoading(true);
       try {
-        // Pass the ID to the API
         const data = await applicationApi.getById(params.id as string);
         setApplication(data as unknown as ApplicationData);
       } catch (error: unknown) {
         console.error('Error fetching application:', error);
 
-        // Determine the appropriate error message based on the error type
         let errorTitle = 'Error';
         let errorDescription = 'Failed to fetch application details';
 
-        // Check for rate limiting error (429)
         const appError = error as {
           response?: { status: number };
           message?: string;
@@ -192,20 +188,15 @@ export default function ApplicationStatusDetail() {
     );
   }
 
-  // Get the current status
   const currentStatus = mapToApplicationStatus(application.status);
 
-  // Get the current status index in the flow
   const currentStatusIndex = statusOrder.indexOf(currentStatus);
 
-  // Function to map API status to our ApplicationStatus enum
   function mapToApplicationStatus(status: string): ApplicationStatus {
-    // First try direct mapping
     if (Object.values(ApplicationStatus).includes(status as ApplicationStatus)) {
       return status as ApplicationStatus;
     }
 
-    // Handle potential differences in format or naming
     const statusMap: Record<string, ApplicationStatus> = {
       pending: ApplicationStatus.SUBMITTED,
       document_verification: ApplicationStatus.COUNTER_VERIFICATION,
@@ -278,7 +269,6 @@ export default function ApplicationStatusDetail() {
                     return null;
                   }
 
-                  // For a cleaner timeline, we'll show only key statuses
                   const isVisible =
                     index === 0 ||
                     index === statusOrder.length - 1 ||

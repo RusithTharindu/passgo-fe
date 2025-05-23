@@ -17,13 +17,11 @@ export default function ApplicationsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  // Add createdAt field to the mock data
   const applicationsWithDate = applications?.map((app: Application) => ({
     ...app,
     createdAt: app.createdAt || new Date().toISOString(), // Fallback to current date if not provided
   }));
 
-  // Filter applications based on search query and status
   const filteredApplications = applicationsWithDate?.filter((app: Application) => {
     const matchesSearch =
       searchQuery === '' ||
@@ -59,44 +57,6 @@ export default function ApplicationsPage() {
             </div>
 
             <div className='p-4 space-y-4'>
-              {/* <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
-                <div className='flex-1 w-full sm:max-w-sm'>
-                  <div className='relative'>
-                    <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-                    <Input
-                      placeholder='Search by name or NIC number...'
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      className='pl-8'
-                    />
-                  </div>
-                </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className='w-[180px]'>
-                    <SelectValue placeholder='Filter by status' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='all'>All Status</SelectItem>
-                    <SelectItem value={ApplicationStatus.PENDING}>Pending</SelectItem>
-                    <SelectItem value={ApplicationStatus.DOCUMENT_VERIFICATION}>
-                      Document Verification
-                    </SelectItem>
-                    <SelectItem value={ApplicationStatus.BIOMETRIC_PENDING}>
-                      Biometric Pending
-                    </SelectItem>
-                    <SelectItem value={ApplicationStatus.BIOMETRIC_COMPLETED}>
-                      Biometric Completed
-                    </SelectItem>
-                    <SelectItem value={ApplicationStatus.PAYMENT_PENDING}>
-                      Payment Pending
-                    </SelectItem>
-                    <SelectItem value={ApplicationStatus.PROCESSING}>Processing</SelectItem>
-                    <SelectItem value={ApplicationStatus.COMPLETED}>Completed</SelectItem>
-                    <SelectItem value={ApplicationStatus.REJECTED}>Rejected</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div> */}
-
               <DataTable data={filteredApplications || []} />
             </div>
           </div>

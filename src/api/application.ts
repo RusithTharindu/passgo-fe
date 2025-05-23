@@ -51,7 +51,6 @@ interface DocumentUrls {
 }
 
 export const applicationApi = {
-  // Create a new application
   create: async (formData: Record<string, unknown>): Promise<Application> => {
     try {
       const response = await AxiosInstance.post(`${API_URL}application`, formData);
@@ -62,7 +61,6 @@ export const applicationApi = {
     }
   },
 
-  // Get application by ID
   getById: async (id?: string): Promise<Application> => {
     try {
       console.log('API - Fetching application:', id);
@@ -77,7 +75,6 @@ export const applicationApi = {
         ? ((axiosError.response.data as Record<string, unknown>).message as string)
         : axiosError.message || 'Failed to fetch application';
 
-      // Log the detailed error for debugging
       console.error('API Error - Get application:', {
         statusCode,
         message: errorMessage,
@@ -85,7 +82,6 @@ export const applicationApi = {
         response: axiosError.response?.data,
       });
 
-      // Create an error object with additional properties
       const enhancedError: ApiError = new Error(errorMessage);
       enhancedError.statusCode = statusCode;
       enhancedError.response = axiosError.response as AxiosResponse;
@@ -94,7 +90,6 @@ export const applicationApi = {
     }
   },
 
-  // Get all applications for the current user
   getAll: async (): Promise<Application[]> => {
     try {
       const response = await AxiosInstance.get(`${API_URL}applications`);
@@ -115,7 +110,6 @@ export const applicationApi = {
     }
   },
 
-  // Update the document URL fetching to match backend implementation
   getDocumentUrls: async (applicationId: string): Promise<DocumentUrls> => {
     if (!applicationId) {
       throw new Error('Application ID is required');
@@ -123,7 +117,7 @@ export const applicationApi = {
 
     try {
       console.log('Fetching document URLs for application:', applicationId);
-      // Update the endpoint to match the backend
+
       const response = await AxiosInstance.get(`${API_URL}application/${applicationId}`);
 
       console.log('Document URLs response:', response.data);
@@ -132,7 +126,6 @@ export const applicationApi = {
         throw new Error('No document URLs returned from server');
       }
 
-      // Extract document URLs from the application data
       const { documents } = response.data;
 
       console.log('Documents:', documents);
@@ -164,7 +157,6 @@ export const applicationApi = {
     }
   },
 
-  // Update the uploadDocument function to handle the response better
   uploadDocument: async (documentType: DocumentType, file: File): Promise<{ url: string }> => {
     try {
       const formData = new FormData();
@@ -177,7 +169,6 @@ export const applicationApi = {
         },
       });
 
-      // Check if we got a URL back
       if (!response.data?.url) {
         throw new Error('No URL returned from server');
       }
@@ -189,7 +180,6 @@ export const applicationApi = {
     }
   },
 
-  // Update an existing application
   update: async (id: string, data: Partial<Application>): Promise<Application> => {
     try {
       const response = await AxiosInstance.patch(`${API_URL}application/${id}`, data);
@@ -200,7 +190,6 @@ export const applicationApi = {
     }
   },
 
-  // Cancel an application
   cancel: async (id: string): Promise<void> => {
     try {
       await AxiosInstance.post(`${API_URL}application/${id}/cancel`);

@@ -30,12 +30,10 @@ export default function AppointmentsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState<Date>();
 
-  // Handle both array and paginated response types
   const appointmentItems: Appointment[] = Array.isArray(appointments)
     ? appointments
     : (appointments?.items ?? []);
 
-  // Filter appointments based on status and date
   const filteredAppointments = appointmentItems.filter(appointment => {
     const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
 
@@ -70,48 +68,6 @@ export default function AppointmentsPage() {
             </div>
 
             <div className='p-4 space-y-4'>
-              {/* <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
-                <div className='flex-1 w-full sm:max-w-sm'>
-                </div>
-                <div className='flex gap-4'>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant='outline'
-                        className={cn(
-                          'w-[200px] justify-start text-left font-normal',
-                          !dateFilter && 'text-muted-foreground',
-                        )}
-                      >
-                        <Calendar className='mr-2 h-4 w-4' />
-                        {dateFilter ? format(dateFilter, 'PPP') : 'Filter by date'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className='w-auto p-0' align='start'>
-                      <CalendarComponent
-                        mode='single'
-                        selected={dateFilter}
-                        onSelect={setDateFilter}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Filter by status' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='all'>All Status</SelectItem>
-                      {Object.values(AppointmentStatus).map(status => (
-                        <SelectItem key={status} value={status}>
-                          {status.charAt(0) + status.slice(1).toLowerCase()}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div> */}
-
               <DataTable
                 data={filteredAppointments}
                 onRowClick={appointment => router.push(`/admin/appointments/${appointment.id}`)}

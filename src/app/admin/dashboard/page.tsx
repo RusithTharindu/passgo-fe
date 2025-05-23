@@ -76,49 +76,6 @@ export default function AdminDashboard() {
         </div>
       ) : (
         <>
-          {/* <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>Total Applications</CardTitle>
-                <FileText className='h-4 w-4 text-muted-foreground' />
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>{applicationStats.totalApplications}</div>
-                <p className='text-xs text-muted-foreground'>+20.1% from last month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>Pending Verification</CardTitle>
-                <Clock className='h-4 w-4 text-muted-foreground' />
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>{applicationStats.pendingVerification}</div>
-                <p className='text-xs text-muted-foreground'>Requires immediate attention</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>Ready for Collection</CardTitle>
-                <FileCheck2 className='h-4 w-4 text-muted-foreground' />
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>{applicationStats.readyForCollection}</div>
-                <p className='text-xs text-muted-foreground'>Awaiting collection</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>Rejected Applications</CardTitle>
-                <AlertCircle className='h-4 w-4 text-muted-foreground' />
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>{applicationStats.rejectedApplications}</div>
-                <p className='text-xs text-muted-foreground'>This month</p>
-              </CardContent>
-            </Card>
-          </div> */}
-
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
             <Card className='col-span-4'>
               <CardHeader>

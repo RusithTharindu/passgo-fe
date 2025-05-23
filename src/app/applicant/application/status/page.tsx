@@ -29,12 +29,9 @@ export default function ApplicationStatusPage() {
 
     setIsLoading(true);
     try {
-      // Attempt to fetch the application with the provided ID
       await applicationApi.getById(applicationId);
-      // If successful, redirect to the detail view
       router.push(`/applicant/application/status/${applicationId}`);
     } catch (error: unknown) {
-      // Check for rate limiting error (429)
       const appError = error as {
         response?: { status: number };
         message?: string;
