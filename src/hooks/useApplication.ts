@@ -7,6 +7,9 @@ import {
   deleteApplication,
   getApplicationById,
   getApplications,
+  getDailyDistribution,
+  getDistrictDistribution,
+  getPassportTypesData,
   updateApplication,
 } from '@/api/admin/AdminApi';
 import { UpdateApplicationPayload } from '@/types/applicationTypes';
@@ -178,3 +181,27 @@ export function useUploadApplicationDocument() {
     },
   });
 }
+
+export const useGetDistrictDistribution = () => {
+  return useQuery({
+    queryKey: adminQueryKeys.getDistrictDistribution,
+    queryFn: getDistrictDistribution,
+    enabled: true,
+  });
+};
+
+export const useGetDailyDistribution = () => {
+  return useQuery({
+    queryKey: adminQueryKeys.getDailyDistribution,
+    queryFn: getDailyDistribution,
+    enabled: true,
+  });
+};
+
+export const useGetPassportTypesData = () => {
+  return useQuery({
+    queryKey: adminQueryKeys.getPassportTypesData,
+    queryFn: getPassportTypesData,
+    enabled: true,
+  });
+};

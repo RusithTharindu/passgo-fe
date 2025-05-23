@@ -21,3 +21,22 @@ export const deleteApplication = async (id: string) => {
   const res = await AxiosInstance.delete(`${applicationEndpoints.application}/${id}`);
   return res.data;
 };
+
+export const getDistrictDistribution = async () => {
+  const res = await AxiosInstance.get(
+    `${applicationEndpoints.application}/stats/district-distribution`,
+  );
+  return res.data;
+};
+
+export const getDailyDistribution = async () => {
+  const res = await AxiosInstance.get(
+    `${applicationEndpoints.application}/stats/daily-distribution`,
+  );
+  return res.data;
+};
+
+export const getPassportTypesData = async () => {
+  const res = await AxiosInstance.get(`${applicationEndpoints.application}/stats/passport-types`);
+  return res.data;
+};
