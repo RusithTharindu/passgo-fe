@@ -9,6 +9,8 @@ export const profileEndpoints = {
 
 export const applicationEndpoints = {
   application: `${process.env.NEXT_PUBLIC_API_URL}application`,
+  uploadDocument: (id: string, documentType: string) =>
+    `${process.env.NEXT_PUBLIC_API_URL}application/${id}/documents?type=${documentType}`,
 };
 
 export const renewalEndpoints = {

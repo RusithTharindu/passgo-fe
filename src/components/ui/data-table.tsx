@@ -1,5 +1,9 @@
 'use client';
 
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+
 import * as React from 'react';
 import {
   ColumnDef,
@@ -39,7 +43,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState('');
+  const [globalFilter, setGlobalFilter] = React.useState<string>('');
 
   const table = useReactTable({
     data,
@@ -61,16 +65,16 @@ export function DataTable<TData, TValue>({
   return (
     <div className='space-y-4'>
       <div className='flex items-center gap-4'>
-        {searchKey && (
+        {/* {searchKey && (
           <div className='flex-1'>
             <Input
               placeholder='Search...'
-              value={globalFilter ?? ''}
+              value={globalFilter}
               onChange={event => setGlobalFilter(event.target.value)}
               className='max-w-sm'
             />
           </div>
-        )}
+        )} */}
       </div>
 
       <div className='rounded-md border'>

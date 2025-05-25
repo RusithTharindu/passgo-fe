@@ -13,7 +13,6 @@ export default function LoginPage() {
       className='min-h-screen w-full flex flex-col md:flex-row relative'
       style={{ background: colors.background.secondary }}
     >
-      {/* Back to Home Button - Absolute positioned */}
       <Button
         variant='ghost'
         className='absolute top-4 left-4 flex items-center gap-2 text-white'
@@ -23,7 +22,6 @@ export default function LoginPage() {
         Back to Home
       </Button>
 
-      {/* Left Section - Brand/Welcome */}
       <div
         className='w-full hidden md:w-1/2 p-8 md:flex flex-col justify-center items-center rounded-r-2xl'
         style={{ background: colors.primary.main }}

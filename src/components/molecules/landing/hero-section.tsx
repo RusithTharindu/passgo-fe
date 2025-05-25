@@ -9,8 +9,9 @@ import coverImage from '../../../../public/assets/images/applicant-home/cover-im
 
 export function HeroSection() {
   const router = useRouter();
+  const accessToken = Cookies.get('token');
+
   const onClick = () => {
-    const accessToken = Cookies.get('token');
     if (accessToken) {
       const decodedToken = decode(accessToken) as JwtPayload;
       const role = decodedToken.role;
@@ -24,6 +25,10 @@ export function HeroSection() {
     } else {
       router.push('/login');
     }
+  };
+
+  const handleCheckStatus = () => {
+    router.push('/applicant/application/status');
   };
 
   return (
@@ -55,6 +60,7 @@ export function HeroSection() {
               <Button
                 variant='outline'
                 className='border-white text-white hover:bg-white/10 bg-transparent'
+                onClick={handleCheckStatus}
               >
                 Check Status
               </Button>

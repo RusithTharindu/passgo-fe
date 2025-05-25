@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { SubmittedDocumentView } from '@/components/molecules/submitted-document-view';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DocumentPreview } from '@/components/molecules/document-preview';
 
 const documentLabels = {
   [PassportDocumentType.CURRENT_PASSPORT]: 'Current Passport',
@@ -102,6 +103,8 @@ export default function RenewalDetailsPage() {
     Math.round((Object.values(renewal.documents).filter(Boolean).length / 5) * 100),
     100,
   );
+
+  const S3_BUCKET_BASE_URL = 'https://passgo-data-bucket.s3.us-east-1.amazonaws.com/';
 
   return (
     <div className='p-6 space-y-6 max-w-7xl mx-auto'>
@@ -188,15 +191,22 @@ export default function RenewalDetailsPage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <CardContent className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
               {Object.entries(documentLabels).map(([key, label]) => {
-                const documentUrl = renewal.documents[key as PassportDocumentType];
-                if (!documentUrl) return null;
+                const relativeDocumentPath = renewal.documents[key as PassportDocumentType];
+                if (!relativeDocumentPath) return null;
+
+                // Ensure the path doesn't already start with http, in case some URLs are already absolute
+                const fullDocumentUrl = relativeDocumentPath.startsWith('http')
+                  ? relativeDocumentPath
+                  : `${S3_BUCKET_BASE_URL}${relativeDocumentPath}`;
+
                 return (
-                  <SubmittedDocumentView
+                  <DocumentPreview
                     key={key}
                     label={label}
-                    documentUrl={documentUrl}
+                    photoURL={fullDocumentUrl}
+                    documentType={key as PassportDocumentType}
                     isRequired={key !== PassportDocumentType.ADDITIONAL_DOCS}
                   />
                 );

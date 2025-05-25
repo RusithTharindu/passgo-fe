@@ -1,12 +1,15 @@
 'use client';
 
+{
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+}
+
 import { useRouter } from 'next/navigation';
 import { DataTable } from './data-table';
 import { useAppointments } from '@/hooks/useAppointments';
-import { Loader2, Search, Calendar } from 'lucide-react';
+import { Loader2, Calendar } from 'lucide-react';
 import { Appointment, AppointmentStatus } from '@/types/appointmentTypes';
 import { AppointmentStats } from '@/components/admin/appointment-stats';
-import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import {
   Select,
@@ -24,22 +27,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 export default function AppointmentsPage() {
   const router = useRouter();
   const { data: appointments, isLoading } = useAppointments();
-  const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState<Date>();
 
-  // Handle both array and paginated response types
   const appointmentItems: Appointment[] = Array.isArray(appointments)
     ? appointments
     : (appointments?.items ?? []);
 
-  // Filter appointments based on search query, status, and date
   const filteredAppointments = appointmentItems.filter(appointment => {
-    const matchesSearch =
-      searchQuery === '' ||
-      appointment.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      appointment.nicNumber.toLowerCase().includes(searchQuery.toLowerCase());
-
     const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
 
     const matchesDate =
@@ -47,7 +42,7 @@ export default function AppointmentsPage() {
       format(new Date(appointment.preferredDate), 'yyyy-MM-dd') ===
         format(dateFilter, 'yyyy-MM-dd');
 
-    return matchesSearch && matchesStatus && matchesDate;
+    return matchesStatus && matchesDate;
   });
 
   return (
@@ -73,57 +68,6 @@ export default function AppointmentsPage() {
             </div>
 
             <div className='p-4 space-y-4'>
-              <div className='flex flex-col sm:flex-row gap-4 items-center justify-between'>
-                <div className='flex-1 w-full sm:max-w-sm'>
-                  <div className='relative'>
-                    <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-                    <Input
-                      placeholder='Search by name or NIC number...'
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      className='pl-8'
-                    />
-                  </div>
-                </div>
-                <div className='flex gap-4'>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant='outline'
-                        className={cn(
-                          'w-[200px] justify-start text-left font-normal',
-                          !dateFilter && 'text-muted-foreground',
-                        )}
-                      >
-                        <Calendar className='mr-2 h-4 w-4' />
-                        {dateFilter ? format(dateFilter, 'PPP') : 'Filter by date'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className='w-auto p-0' align='start'>
-                      <CalendarComponent
-                        mode='single'
-                        selected={dateFilter}
-                        onSelect={setDateFilter}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Filter by status' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='all'>All Status</SelectItem>
-                      {Object.values(AppointmentStatus).map(status => (
-                        <SelectItem key={status} value={status}>
-                          {status.charAt(0) + status.slice(1).toLowerCase()}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
               <DataTable
                 data={filteredAppointments}
                 onRowClick={appointment => router.push(`/admin/appointments/${appointment.id}`)}

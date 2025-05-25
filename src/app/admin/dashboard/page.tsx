@@ -1,167 +1,156 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Bar,
   BarChart,
   Line,
   LineChart,
-  Pie,
-  PieChart,
   ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts';
+import {
+  useGetDistrictDistribution,
+  useGetDailyDistribution,
+  useGetPassportTypesData,
+} from '@/hooks/useApplication';
+import { Skeleton } from '@/components/ui/skeleton';
 
-interface DailyApplicationData {
-  date: string;
-  applications: number;
-}
-
-interface DistrictData {
-  district: string;
-  applications: number;
-}
-
-interface PassportTypeData {
-  name: string;
-  value: number;
-}
-
-// Sample data - Replace with actual API data
-const dailyApplicationData: DailyApplicationData[] = [
-  { date: '2024-01-01', applications: 45 },
-  { date: '2024-01-02', applications: 52 },
-  { date: '2024-01-03', applications: 49 },
-  { date: '2024-01-04', applications: 63 },
-  { date: '2024-01-05', applications: 58 },
-  { date: '2024-01-06', applications: 48 },
-  { date: '2024-01-07', applications: 55 },
+const passportTypes = [
+  { name: 'Regular (36 Pages)', value: 450 },
+  { name: 'Regular (60 Pages)', value: 180 },
+  { name: 'Business', value: 120 },
+  { name: 'Official', value: 50 },
 ];
 
-const districtData: DistrictData[] = [
-  { district: 'Colombo', applications: 150 },
-  { district: 'Gampaha', applications: 120 },
-  { district: 'Kalutara', applications: 90 },
-  { district: 'Kandy', applications: 85 },
-  { district: 'Galle', applications: 75 },
-  { district: 'Matara', applications: 70 },
-];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658'];
 
-const passportTypeData: PassportTypeData[] = [
-  { name: 'Normal', value: 60 },
-  { name: 'One Day', value: 25 },
-  { name: 'Business', value: 15 },
-];
+export default function AdminDashboard() {
+  const { data: districtDistribution, isLoading: isDistrictLoading } = useGetDistrictDistribution();
+  const { data: dailyDistribution, isLoading: isDailyLoading } = useGetDailyDistribution();
+  const { data: passportTypesData, isLoading: isPassportTypesLoading } = useGetPassportTypesData();
 
-export default function DashboardPage() {
+  const isLoading = isDistrictLoading || isDailyLoading || isPassportTypesLoading;
+
   return (
-    <div className='space-y-4'>
-      <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>Dashboard Analytics</h1>
-
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-        {/* Daily Application Rate */}
-        <Card className='col-span-2'>
-          <CardHeader>
-            <CardTitle className='dark:text-white'>Daily Application Rate</CardTitle>
-            <CardDescription className='dark:text-gray-400'>
-              Number of applications per day
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer height={300}>
-              <LineChart data={dailyApplicationData}>
-                <XAxis
-                  dataKey='date'
-                  tickFormatter={(value: string) => new Date(value).toLocaleDateString()}
-                  stroke='currentColor'
-                  className='dark:text-gray-400'
-                />
-                <YAxis stroke='currentColor' className='dark:text-gray-400' />
-                <Tooltip
-                  labelFormatter={(value: string) => new Date(value).toLocaleDateString()}
-                  formatter={(value: number) => [`${value} applications`]}
-                  contentStyle={{
-                    backgroundColor: 'var(--background)',
-                    borderColor: 'var(--border)',
-                  }}
-                  labelStyle={{ color: 'var(--foreground)' }}
-                />
-                <Line
-                  type='monotone'
-                  dataKey='applications'
-                  stroke='#2563eb'
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* District Based Applications */}
-        <Card className='col-span-2'>
-          <CardHeader>
-            <CardTitle className='dark:text-white'>Applications by District</CardTitle>
-            <CardDescription className='dark:text-gray-400'>
-              Distribution across districts
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer height={300}>
-              <BarChart data={districtData}>
-                <XAxis dataKey='district' stroke='currentColor' className='dark:text-gray-400' />
-                <YAxis stroke='currentColor' className='dark:text-gray-400' />
-                <Tooltip
-                  formatter={(value: number) => [`${value} applications`]}
-                  contentStyle={{
-                    backgroundColor: 'var(--background)',
-                    borderColor: 'var(--border)',
-                  }}
-                  labelStyle={{ color: 'var(--foreground)' }}
-                />
-                <Bar dataKey='applications' fill='#3b82f6' radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Passport Type Analytics */}
-        <Card>
-          <CardHeader>
-            <CardTitle className='dark:text-white'>Passport Types</CardTitle>
-            <CardDescription className='dark:text-gray-400'>
-              Distribution by service type
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer height={300}>
-              <PieChart>
-                <Pie
-                  data={passportTypeData}
-                  dataKey='value'
-                  nameKey='name'
-                  cx='50%'
-                  cy='50%'
-                  outerRadius={100}
-                  fill='#3b82f6'
-                  label={({ name, percent }: { name: string; percent: number }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'var(--background)',
-                    borderColor: 'var(--border)',
-                  }}
-                  labelStyle={{ color: 'var(--foreground)' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+    <div className='container mx-auto py-8 space-y-8'>
+      <div className='flex items-center justify-between'>
+        <h1 className='text-3xl font-bold'>Passport Application Data Analytics</h1>
       </div>
+
+      {isLoading ? (
+        <div className='space-y-8'>
+          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
+            <Card className='col-span-4'>
+              <CardHeader>
+                <Skeleton className='h-6 w-1/3' />
+              </CardHeader>
+              <CardContent className='pl-2'>
+                <Skeleton className='h-[350px] w-full' />
+              </CardContent>
+            </Card>
+            <Card className='col-span-3'>
+              <CardHeader>
+                <Skeleton className='h-6 w-1/3' />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className='h-[350px] w-full' />
+              </CardContent>
+            </Card>
+          </div>
+          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
+            <Card className='col-span-4'>
+              <CardHeader>
+                <Skeleton className='h-6 w-1/3' />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className='h-[350px] w-full' />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
+            <Card className='col-span-4'>
+              <CardHeader>
+                <CardTitle>Daily Applications</CardTitle>
+              </CardHeader>
+              <CardContent className='pl-2'>
+                <ResponsiveContainer width='100%' height={350}>
+                  <LineChart data={dailyDistribution}>
+                    <XAxis
+                      dataKey='date'
+                      stroke='#888888'
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      stroke='#888888'
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={value => `${value}`}
+                    />
+                    <Tooltip />
+                    <Line dataKey='applications' stroke='#0ea5e9' strokeWidth={2} dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+            <Card className='col-span-3'>
+              <CardHeader>
+                <CardTitle>Applications by District</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width='100%' height={350}>
+                  <BarChart data={districtDistribution} layout='vertical'>
+                    <XAxis type='number' />
+                    <YAxis dataKey='name' type='category' width={100} />
+                    <Tooltip />
+                    <Bar dataKey='value' fill='#0ea5e9' radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
+            <Card className='col-span-4'>
+              <CardHeader>
+                <CardTitle>Passport Types Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width='100%' height={350}>
+                  <PieChart>
+                    <Pie
+                      data={passportTypesData}
+                      cx='50%'
+                      cy='50%'
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                      outerRadius={130}
+                      fill='#8884d8'
+                      dataKey='value'
+                    >
+                      {passportTypes.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
     </div>
   );
 }
