@@ -1,5 +1,7 @@
 import { DocumentProcessorServiceClient } from '@google-cloud/documentai';
-import credentials from '../config/google-cloud-credentials.json';
+
+// import the credentials here from the config folder
+// import credentials from '../config/google-cloud-credentials.json';
 
 export function getDocumentAiClient() {
   const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
@@ -12,7 +14,7 @@ export function getDocumentAiClient() {
 
   return {
     client: new DocumentProcessorServiceClient({
-      credentials,
+      // credentials,
       projectId,
     }),
     name: `projects/${projectId}/locations/${location}/processors/${processorId}`,
