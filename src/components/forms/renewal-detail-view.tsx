@@ -80,7 +80,13 @@ export function RenewalDetailView({ renewal }: RenewalDetailViewProps) {
   const renderDocumentItem = (label: string, type: PassportDocumentType, isRequired = true) => {
     const documentUrl = renewal.documents[type];
     return (
-      <DocumentPreview key={type} label={label} url={documentUrl || ''} isRequired={isRequired} />
+      <DocumentPreview
+        key={type}
+        label={label}
+        documentType={type}
+        photoURL={documentUrl || ''}
+        isRequired={isRequired}
+      />
     );
   };
 

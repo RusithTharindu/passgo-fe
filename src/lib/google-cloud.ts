@@ -1,5 +1,4 @@
 import { DocumentProcessorServiceClient } from '@google-cloud/documentai';
-import { GoogleAuth } from 'google-auth-library';
 import credentials from '../config/google-cloud-credentials.json';
 
 export function getDocumentAiClient() {
@@ -13,10 +12,8 @@ export function getDocumentAiClient() {
 
   return {
     client: new DocumentProcessorServiceClient({
-      authClient: new GoogleAuth({
-        credentials,
-        scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-      }),
+      credentials,
+      projectId,
     }),
     name: `projects/${projectId}/locations/${location}/processors/${processorId}`,
   };

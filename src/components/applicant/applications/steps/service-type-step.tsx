@@ -4,10 +4,13 @@ import { useFormContext } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { ApplicationFormData } from '../passport-application-form';
+import { applicationSchema } from '@/types/application';
+import { z } from 'zod';
+
+type FormData = z.infer<typeof applicationSchema>;
 
 export default function ServiceTypeStep() {
-  const { control } = useFormContext<ApplicationFormData>();
+  const { control } = useFormContext<FormData>();
 
   return (
     <div className='space-y-6'>

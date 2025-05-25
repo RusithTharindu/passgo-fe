@@ -7,7 +7,7 @@ const Applicant = () => {
   const router = useRouter();
   useEffect(() => {
     router.push('/applicant/home');
-  }, []);
+  }, [router]);
   return (
     <div>
       <p>Applicant</p>

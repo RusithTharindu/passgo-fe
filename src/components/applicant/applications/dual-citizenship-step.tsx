@@ -59,7 +59,7 @@ export function DualCitizenshipStep({ form }: DualCitizenshipStepProps) {
                 <FormItem>
                   <FormLabel>Dual Citizenship Certificate Number</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -73,7 +73,7 @@ export function DualCitizenshipStep({ form }: DualCitizenshipStepProps) {
                 <FormItem>
                   <FormLabel>Foreign Nationality</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -88,7 +88,7 @@ export function DualCitizenshipStep({ form }: DualCitizenshipStepProps) {
               <FormItem>
                 <FormLabel>Foreign Passport Number</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} value={field.value || ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

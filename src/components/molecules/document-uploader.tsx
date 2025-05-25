@@ -29,6 +29,7 @@ export function DocumentUploader({
 }: DocumentUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(value || null);
+  const [currentPreviewType, setCurrentPreviewType] = useState(previewType);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (file: File) => {
@@ -105,7 +106,7 @@ export function DocumentUploader({
           </div>
         ) : previewUrl ? (
           <div className='relative w-full h-full'>
-            {previewType === 'image' ? (
+            {currentPreviewType === 'image' ? (
               <div className='relative w-full h-full'>
                 <Image
                   src={previewUrl}
@@ -114,7 +115,7 @@ export function DocumentUploader({
                   className='object-contain'
                   onError={() => {
                     // Handle image load errors
-                    setPreviewType('document');
+                    setCurrentPreviewType('document');
                   }}
                 />
                 <Button

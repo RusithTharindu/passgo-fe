@@ -8,7 +8,21 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 
 // NIC validation utility
-const nicUtils = {
+interface MonthData {
+  month: string;
+  days: number;
+}
+
+const nicUtils: {
+  months: MonthData[];
+  isValidNIC: (nicNumber: string) => boolean;
+  extractData: (nicNumber: string) => { year: string; dayList: number; character: string };
+  findDayAndGender: (
+    days: number,
+    monthsArray: MonthData[],
+  ) => { day: number; month: string; gender: string };
+  extractInfoFromNIC: (nicNumber: string) => { gender: string; dateOfBirth: Date };
+} = {
   // Months data for calculating birthdate
   months: [
     { month: 'January', days: 31 },
@@ -164,7 +178,7 @@ export function NICValidator({ nicNumber, onValidationSuccess }: NICValidatorPro
 
   if (isValidated) {
     return (
-      <Alert variant='success' className='my-4 bg-green-50 border-green-200'>
+      <Alert variant='default' className='my-4 bg-green-50 border-green-200'>
         <CheckCircle className='h-4 w-4 text-green-600' />
         <AlertTitle className='text-green-800'>NIC Validated</AlertTitle>
         <AlertDescription className='text-green-700'>
