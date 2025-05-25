@@ -5,8 +5,6 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { applicationSchema } from '@/types/application';
 import { z } from 'zod';
-import { DocumentUpload } from './document-upload';
-import { DocumentType } from '@/types/application';
 import {
   Select,
   SelectContent,
@@ -16,6 +14,10 @@ import {
 } from '@/components/ui/select';
 import { SriLankaDistrict } from '@/types/applicationTypes';
 
+{
+   
+}
+
 type FormData = z.infer<typeof applicationSchema>;
 
 interface BirthInfoStepProps {
@@ -23,14 +25,6 @@ interface BirthInfoStepProps {
 }
 
 export function BirthInfoStep({ form }: BirthInfoStepProps) {
-  const handleBirthCertFrontUpload = (url: string) => {
-    form.setValue('birthCertificatePhotos.front', url);
-  };
-
-  const handleBirthCertBackUpload = (url: string) => {
-    form.setValue('birthCertificatePhotos.back', url);
-  };
-
   return (
     <div className='space-y-6'>
       <div className='mb-8'>
@@ -82,26 +76,6 @@ export function BirthInfoStep({ form }: BirthInfoStepProps) {
       </div>
 
       <div className='space-y-6'>
-        <h3 className='text-lg font-medium mt-6'>Upload Birth Certificate</h3>
-
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-          <div>
-            <FormLabel>Birth Certificate (Front)</FormLabel>
-            <DocumentUpload
-              documentType={DocumentType.BIRTH_CERT_FRONT}
-              onUploadComplete={handleBirthCertFrontUpload}
-            />
-          </div>
-
-          <div>
-            <FormLabel>Birth Certificate (Back)</FormLabel>
-            <DocumentUpload
-              documentType={DocumentType.BIRTH_CERT_BACK}
-              onUploadComplete={handleBirthCertBackUpload}
-            />
-          </div>
-        </div>
-
         <div className='bg-blue-50 border border-blue-200 rounded-md p-4 mt-4'>
           <p className='text-sm text-blue-700'>
             <strong>Note:</strong> Please ensure that all details on the birth certificate are

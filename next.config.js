@@ -19,6 +19,12 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    GOOGLE_CLOUD_PROJECT_ID: process.env.GOOGLE_CLOUD_PROJECT_ID,
+    GOOGLE_CLOUD_LOCATION: process.env.GOOGLE_CLOUD_LOCATION,
+    GOOGLE_CLOUD_PROCESSOR_ID: process.env.GOOGLE_CLOUD_PROCESSOR_ID,
+    GOOGLE_CLOUD_API_KEY: process.env.GOOGLE_CLOUD_API_KEY,
+  },
 };
 
 module.exports = nextConfig;

@@ -13,6 +13,7 @@ import {
   User,
   Moon,
   Sun,
+  ChevronsLeftRightEllipsis,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -77,6 +78,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       title: 'Passport Renewals',
       href: '/admin/renewals',
       icon: RefreshCw,
+    },
+    {
+      title: 'Document Validator',
+      href: '/admin/document-ai',
+      icon: ChevronsLeftRightEllipsis,
     },
   ];
 
