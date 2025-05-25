@@ -93,7 +93,9 @@ export function ApplicationDetails({ applicationId }: ApplicationDetailsProps) {
             </div>
             <div>
               <p className='text-sm text-muted-foreground'>Date of Birth</p>
-              <p>{format(new Date(application.birthdate), 'PPP')}</p>
+              <p>
+                {application.birthdate ? format(new Date(application.birthdate), 'PPP') : 'N/A'}
+              </p>
             </div>
             <div>
               <p className='text-sm text-muted-foreground'>Contact</p>

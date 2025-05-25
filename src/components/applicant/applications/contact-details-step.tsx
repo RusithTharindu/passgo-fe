@@ -130,9 +130,9 @@ export function ContactDetailsStep({ form }: ContactDetailsStepProps) {
               <SelectContent>
                 <SelectItem value={CollectionLocation.COLOMBO}>Colombo</SelectItem>
                 <SelectItem value={CollectionLocation.KANDY}>Kandy</SelectItem>
-                <SelectItem value={CollectionLocation.GALLE}>Galle</SelectItem>
                 <SelectItem value={CollectionLocation.MATARA}>Matara</SelectItem>
                 <SelectItem value={CollectionLocation.VAVUNIYA}>Vavuniya</SelectItem>
+                <SelectItem value={CollectionLocation.REGIONAL_OFFICE}>Regional Office</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />

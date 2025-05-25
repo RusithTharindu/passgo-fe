@@ -145,12 +145,12 @@ PassGo is a modern web application built with Next.js 14, TypeScript, and Tailwi
 4. **Development**
 
    ```bash
-   pnpm dev
+   pnpm run dev
    ```
 
 5. **Build**
    ```bash
-   pnpm build
+   pnpm run build
    pnpm start
    ```
 

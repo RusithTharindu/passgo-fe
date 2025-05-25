@@ -53,7 +53,7 @@ export function ChildInfoStep({ form }: ChildInfoStepProps) {
                 <FormItem>
                   <FormLabel>Father&apos;s Passport Number</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -67,7 +67,7 @@ export function ChildInfoStep({ form }: ChildInfoStepProps) {
                 <FormItem>
                   <FormLabel>Mother&apos;s Passport Number</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

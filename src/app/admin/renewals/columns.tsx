@@ -1,5 +1,9 @@
 'use client';
 
+{
+   
+}
+
 import { ColumnDef } from '@tanstack/react-table';
 import { RenewPassportResponse, RenewPassportStatus } from '@/types/passportRenewalTypes';
 import { Badge } from '@/components/ui/badge';
@@ -96,10 +100,10 @@ export const columns: ColumnDef<RenewPassportResponse>[] = [
         </div>
       );
     },
-     
+
     cell: ({ row }) => {
       const status = row.original.status;
-      return <Badge className={statusColors[status]}>{status}</Badge>;
+      return <Badge className={statusColors[status as keyof typeof statusColors]}>{status}</Badge>;
     },
     filterFn: (row, id, value) => {
       return value ? row.getValue(id) === value : true;
