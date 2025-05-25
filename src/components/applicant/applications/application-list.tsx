@@ -10,9 +10,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Eye, Pencil } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -23,8 +20,6 @@ interface ApplicationListProps {
 }
 
 export function ApplicationList({ applications, isLoading }: ApplicationListProps) {
-  const router = useRouter();
-
   if (isLoading) {
     return <ApplicationListSkeleton />;
   }
@@ -48,7 +43,6 @@ export function ApplicationList({ applications, isLoading }: ApplicationListProp
               <TableHead>Type</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created At</TableHead>
-              <TableHead className='text-right'>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,24 +58,6 @@ export function ApplicationList({ applications, isLoading }: ApplicationListProp
                   {application.createdAt
                     ? format(new Date(application.createdAt), 'PPP')
                     : 'Not available'}
-                </TableCell>
-                <TableCell className='text-right space-x-2'>
-                  <Button
-                    variant='outline'
-                    size='icon'
-                    onClick={() => router.push(`/applicant/applications/${application.id}`)}
-                  >
-                    <Eye className='h-4 w-4' />
-                  </Button>
-                  {application.status === 'pending' && (
-                    <Button
-                      variant='outline'
-                      size='icon'
-                      onClick={() => router.push(`/applicant/applications/${application.id}/edit`)}
-                    >
-                      <Pencil className='h-4 w-4' />
-                    </Button>
-                  )}
                 </TableCell>
               </TableRow>
             ))}
