@@ -10,14 +10,14 @@ export const metadata: Metadata = {
 
 export default function ApplicantLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='applicant-layout'>
+    <div className='applicant-layout min-h-screen flex flex-col gradient-animate bg-white'>
       <HeaderNavigation />
 
-      <main className='flex-grow py-6 applicant-main'>
+      <main className='flex-grow py-6 applicant-main relative z-10'>
         <Container>{children}</Container>
       </main>
 
-      <footer className='py-6 bg-white border-t'>
+      <footer className='py-4 border-t border-gray-100 relative z-10'>
         <Container>
           <div className='text-center text-sm text-gray-500'>
             <p>&copy; {new Date().getFullYear()} PassGo. All rights reserved.</p>

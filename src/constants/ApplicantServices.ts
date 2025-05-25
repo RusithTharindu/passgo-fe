@@ -9,7 +9,7 @@ export const ApplicantServices: ServiceCardType[] = [
     description:
       'Apply for a new passport with our streamlined process. Complete your application online and track its progress in real-time.',
     image: '/assets/images/applicant-home/img-1.jpg',
-    link: '/applicant/passport/pre-apply',
+    link: '/applicant/passport/pre-apply  ',
     imagePosition: 'right',
     linkText: 'Apply New Passport',
   },
@@ -19,7 +19,7 @@ export const ApplicantServices: ServiceCardType[] = [
     description:
       'Track the status of your passport application anytime, anywhere. Get real-time updates on your application process.',
     image: '/assets/images/applicant-home/img-2.png',
-    link: '/applicant/status',
+    link: '/applicant/application/status',
     imagePosition: 'left',
     linkText: 'Check Application Status',
   },
@@ -39,7 +39,7 @@ export const ApplicantServices: ServiceCardType[] = [
     description:
       'Renew your passport before it expires. Our simplified renewal process makes it easy to update your travel documents.',
     image: '/assets/images/applicant-home/img-4.webp',
-    link: '/applicant/passport/renewal',
+    link: '/applicant/passport-renewal',
     imagePosition: 'left',
     linkText: 'Renew Passport',
   },

@@ -6,8 +6,6 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.GMAIL_USER,
-    // Using App Password is required if 2FA is enabled
-    // Generate one at: Google Account > Security > 2-Step Verification > App Passwords
     pass: process.env.GMAIL_APP_PASSWORD,
   },
 });

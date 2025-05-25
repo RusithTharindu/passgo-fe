@@ -13,7 +13,6 @@ export default function SignUpPage() {
       className='min-h-screen w-full flex flex-col md:flex-row relative'
       style={{ background: colors.background.secondary }}
     >
-      {/* Back to Home Button - Absolute positioned */}
       <Button
         variant='ghost'
         className='absolute top-4 left-4 flex items-center gap-2 text-white'
@@ -22,8 +21,6 @@ export default function SignUpPage() {
         <ArrowLeft size={20} />
         Back to Home
       </Button>
-
-      {/* Left Section - Brand/Welcome */}
       <div
         className='w-full hidden md:w-1/2 p-8 md:flex flex-col justify-center items-center'
         style={{ background: colors.primary.main }}
@@ -44,8 +41,6 @@ export default function SignUpPage() {
           <p className='text-lg md:text-xl mb-8' style={{ color: colors.background.secondary }}>
             Create your account to start your passport application process with ease
           </p>
-
-          {/* Key Benefits List */}
           <div className='mt-8 space-y-4 text-left'>
             {[
               {
@@ -88,7 +83,6 @@ export default function SignUpPage() {
             ))}
           </div>
 
-          {/* Information Badge */}
           <div className='mt-12 p-4 rounded-lg' style={{ background: `${colors.primary.dark}30` }}>
             <p className='text-sm' style={{ color: colors.background.secondary }}>
               Register now to apply for your Sri Lankan passport online
@@ -97,7 +91,6 @@ export default function SignUpPage() {
         </div>
       </div>
 
-      {/* Right Section - Sign Up Form */}
       <div className='w-full md:w-1/2 md:p-8 flex justify-center items-center bg-white md:bg-transparent'>
         <div className='w-full'>
           <SignUpForm />

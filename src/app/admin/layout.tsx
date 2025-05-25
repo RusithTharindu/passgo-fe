@@ -13,6 +13,7 @@ import {
   User,
   Moon,
   Sun,
+  ChevronsLeftRightEllipsis,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -78,6 +79,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       href: '/admin/renewals',
       icon: RefreshCw,
     },
+    {
+      title: 'Document Validator',
+      href: '/admin/document-ai',
+      icon: ChevronsLeftRightEllipsis,
+    },
   ];
 
   return (
@@ -85,10 +91,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <div className='flex h-full w-64 flex-col bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700'>
         {/* Logo Section */}
-        <div className='flex items-center gap-2 px-6 py-4 border-b border-gray-200 dark:border-gray-700'>
+        <Link
+          href='/'
+          className='flex items-center gap-2 px-6 py-4 border-b border-gray-200 dark:border-gray-700'
+        >
           <Image src={logo} alt='PassGo Logo' width={32} height={32} />
           <span className='text-xl font-bold text-gray-900 dark:text-white'>PassGo</span>
-        </div>
+        </Link>
 
         {/* Navigation Links */}
         <nav className='flex-1 space-y-1 px-3 py-4'>

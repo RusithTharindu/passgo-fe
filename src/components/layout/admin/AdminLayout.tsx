@@ -2,6 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import { Container } from '@/components/ui/container';
+import Link from 'next/link';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -18,26 +19,29 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <Container>
           <div className='flex h-16 items-center justify-between py-4'>
             <div className='flex items-center gap-4'>
-              <a className='flex items-center gap-2 font-semibold' href='/admin/dashboard'>
+              <Link className='flex items-center gap-2 font-semibold' href='/admin/dashboard'>
                 <span className='text-xl font-bold'>PassGo Admin</span>
-              </a>
+              </Link>
             </div>
             <nav className='hidden md:flex items-center gap-6'>
-              <a className='text-sm font-medium hover:text-blue-600' href='/admin/dashboard'>
+              <Link className='text-sm font-medium hover:text-blue-600' href='/admin/dashboard'>
                 Dashboard
-              </a>
-              <a className='text-sm font-medium hover:text-blue-600' href='/admin/applications'>
+              </Link>
+              <Link className='text-sm font-medium hover:text-blue-600' href='/admin/applications'>
                 Applications
-              </a>
-              <a className='text-sm font-medium hover:text-blue-600' href='/admin/users'>
+              </Link>
+              <Link className='text-sm font-medium hover:text-blue-600' href='/admin/document-ai'>
+                Document AI
+              </Link>
+              <Link className='text-sm font-medium hover:text-blue-600' href='/admin/users'>
                 Users
-              </a>
-              <a className='text-sm font-medium hover:text-blue-600' href='/admin/reports'>
+              </Link>
+              <Link className='text-sm font-medium hover:text-blue-600' href='/admin/reports'>
                 Reports
-              </a>
-              <a className='text-sm font-medium hover:text-blue-600' href='/admin/settings'>
+              </Link>
+              <Link className='text-sm font-medium hover:text-blue-600' href='/admin/settings'>
                 Settings
-              </a>
+              </Link>
             </nav>
             <div className='flex items-center gap-4'>
               <div className='flex items-center gap-2'>
