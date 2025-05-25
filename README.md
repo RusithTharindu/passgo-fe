@@ -134,6 +134,12 @@ PassGo is a modern web application built with Next.js 14, TypeScript, and Tailwi
    NEXT_PUBLIC_API_URL=http://localhost:5000/api
    GMAIL_USER=your-email@gmail.com
    GMAIL_APP_PASSWORD=your-app-specific-password
+
+   CLOUD_VISION_API=
+   GOOGLE_CLOUD_PROJECT_ID=
+   GOOGLE_CLOUD_LOCATION=
+   GOOGLE_CLOUD_PROCESSOR_ID=
+   GOOGLE_CLOUD_API_KEY=
    ```
 
 4. **Development**
@@ -159,4 +165,119 @@ src/
 ├── types/               # TypeScript types/interfaces
 ├── utils/               # Utility functions
 └── styles/              # Global styles
+```
+
+## Google Cloud Document AI OCR Integration
+
+### Prerequisites
+
+- Google Cloud Platform (GCP) Account
+- Active Billing Account
+- Google Cloud Project
+
+### Setup Steps
+
+1. **Create Google Cloud Project**
+
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+   - Enable billing for the project
+
+2. **Enable Required APIs**
+
+   ```bash
+   # Enable Document AI and Cloud Resource Manager APIs
+   gcloud services enable documentai.googleapis.com
+   gcloud services enable cloudresourcemanager.googleapis.com
+   ```
+
+3. **Create Service Account**
+
+   ```bash
+   # Create service account
+   gcloud iam service-accounts create passgo-docai-sa \
+     --description="Service account for PassGo Document AI" \
+     --display-name="PassGo DocAI Service Account"
+
+   # Grant necessary permissions
+   gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+     --member="serviceAccount:passgo-docai-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
+     --role="roles/documentai.admin"
+   ```
+
+4. **Generate Service Account Key**
+
+   ```bash
+   gcloud iam service-accounts keys create src/config/google-cloud-credentials.json \
+     --iam-account=passgo-docai-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com
+   ```
+
+5. **Create Document AI Processor**
+
+   - Go to [Document AI Processors](https://console.cloud.google.com/documentai/processors)
+   - Create a new processor (recommended: FORM_PARSER or OCR)
+   - Note down:
+     - Project ID
+     - Location
+     - Processor ID
+
+6. **Environment Configuration**
+   Create a `.env.local` file with the following:
+   ```
+   GOOGLE_CLOUD_PROJECT_ID=your-project-id
+   GOOGLE_CLOUD_LOCATION=your-processor-location
+   GOOGLE_CLOUD_PROCESSOR_ID=your-processor-id
+   GOOGLE_CLOUD_API_KEY=your-api-key
+   ```
+
+### Security Considerations
+
+- Never commit `google-cloud-credentials.json`
+- Add to `.gitignore`:
+  ```
+  src/config/google-cloud-credentials.json
+  ```
+
+### Troubleshooting
+
+- Ensure service account has correct permissions
+- Verify billing is enabled
+- Check network connectivity
+- Validate credentials file format
+
+### Sample Credentials Structure
+
+Create `src/config/google-cloud-credentials.json`:
+
+```json
+{
+  "type": "service_account",
+  "project_id": "your-project-id",
+  "private_key_id": "your-private-key-id",
+  "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
+  "client_email": "your-service-account-email",
+  "client_id": "your-client-id",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account-email"
+}
+```
+
+### Cost Estimation
+
+- Document AI pricing varies
+- Check [current pricing](https://cloud.google.com/document-ai/pricing)
+- Monitor usage in Google Cloud Console
+
+### Performance Optimization
+
+- Implement caching mechanisms
+- Use batch processing for multiple documents
+- Handle rate limits gracefully
+
+### Recommended Dependencies
+
+```bash
+pnpm add @google-cloud/documentai google-auth-library
 ```
