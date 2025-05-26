@@ -1,125 +1,125 @@
-# PassGo - Passport Application Management System
+# 🛂 PassGo - Passport Application Management System
 
-PassGo is a modern web application built with Next.js 14, TypeScript, and Tailwind CSS that streamlines the passport application and management process.
+PassGo is a modern web application built with Next.js 14, TypeScript, and Tailwind CSS that streamlines the passport application and management process. ✈️
 
-## Features
+## ✨ Features
 
-### For Applicants
+### 👤 For Applicants
 
-#### Passport Application
+#### 📋 Passport Application
 
-- **New Application Submission**
-  - Step-by-step form wizard interface
-  - Service type selection (Normal/One Day)
-  - Travel document type selection
-  - Personal information collection
-  - Birth information and documentation
-  - Contact details
-  - Dual citizenship handling
-  - Child passport application support
-  - Photo upload with guidelines
-  - Document uploads (NIC, Birth Certificate)
-  - Collection location selection
-  - Declaration and terms acceptance
+- **📝 New Application Submission**
+  - 🧭 Step-by-step form wizard interface
+  - ⚡ Service type selection (Normal/One Day)
+  - 📄 Travel document type selection
+  - 👤 Personal information collection
+  - 🎂 Birth information and documentation
+  - 📞 Contact details
+  - 🌍 Dual citizenship handling
+  - 👶 Child passport application support
+  - 📸 Photo upload with guidelines
+  - 📎 Document uploads (NIC, Birth Certificate)
+  - 📍 Collection location selection
+  - ✅ Declaration and terms acceptance
 
-#### Application Management
+#### 📊 Application Management
 
-- **Application Tracking**
-  - Real-time status updates
-  - Visual timeline of application progress
-  - Email notifications for status changes
-  - View application details and history
-  - Download submitted documents
+- **🔍 Application Tracking**
+  - ⏱️ Real-time status updates
+  - 📈 Visual timeline of application progress
+  - 📧 Email notifications for status changes
+  - 👁️ View application details and history
+  - ⬇️ Download submitted documents
 
-#### Appointment System
+#### 📅 Appointment System
 
-- **Appointment Booking**
-  - Schedule appointments for document verification
-  - Select preferred date and time
-  - Choose convenient location
-  - Receive email confirmations
-  - Reschedule or cancel appointments
-  - View upcoming appointments
+- **🗓️ Appointment Booking**
+  - 📅 Schedule appointments for document verification
+  - ⏰ Select preferred date and time
+  - 📍 Choose convenient location
+  - 📧 Receive email confirmations
+  - 🔄 Reschedule or cancel appointments
+  - 👀 View upcoming appointments
 
-### For Administrators
+### 👨‍💼 For Administrators
 
-#### Application Management
+#### 📋 Application Management
 
-- **Application Processing**
-  - View all applications
-  - Filter and search applications
-  - Update application status
-  - Add admin notes
-  - Process rejections with reasons
-  - Track application progress
-  - Send email notifications to applicants
+- **⚙️ Application Processing**
+  - 👀 View all applications
+  - 🔍 Filter and search applications
+  - 🔄 Update application status
+  - 📝 Add admin notes
+  - ❌ Process rejections with reasons
+  - 📊 Track application progress
+  - 📧 Send email notifications to applicants
 
-#### Appointment Management
+#### 📅 Appointment Management
 
-- **Appointment Handling**
-  - View all scheduled appointments
-  - Approve/reject appointment requests
-  - Manage time slots availability
-  - Send confirmation emails
-  - Track appointment attendance
+- **🛠️ Appointment Handling**
+  - 👁️ View all scheduled appointments
+  - ✅❌ Approve/reject appointment requests
+  - ⏰ Manage time slots availability
+  - 📧 Send confirmation emails
+  - 📊 Track appointment attendance
 
-#### Document Verification
+#### 📄 Document Verification
 
-- **Document Processing**
-  - Verify uploaded documents
-  - Request additional documents
-  - Mark documents as verified
-  - Track document verification status
+- **🔍 Document Processing**
+  - ✅ Verify uploaded documents
+  - 📎 Request additional documents
+  - ✔️ Mark documents as verified
+  - 📊 Track document verification status
 
-### System Features
+### 🚀 System Features
 
-#### Authentication & Security
+#### 🔐 Authentication & Security
 
-- Secure user authentication
-- Role-based access control
-- Protected API routes
-- Session management
-- Password reset functionality
+- 🛡️ Secure user authentication
+- 👥 Role-based access control
+- 🔒 Protected API routes
+- 🎫 Session management
+- 🔑 Password reset functionality
 
-#### User Interface
+#### 🎨 User Interface
 
-- Responsive design
-- Dark/Light mode support
-- Loading states and animations
-- Error handling and validation
-- Toast notifications
-- Modal confirmations
+- 📱 Responsive design
+- 🌙☀️ Dark/Light mode support
+- ⏳ Loading states and animations
+- ⚠️ Error handling and validation
+- 🔔 Toast notifications
+- 💬 Modal confirmations
 
-#### Email Notifications
+#### 📧 Email Notifications
 
-- Application submission confirmation
-- Status update notifications
-- Appointment confirmations
-- Document verification reminders
-- Collection readiness alerts
+- ✅ Application submission confirmation
+- 🔄 Status update notifications
+- 📅 Appointment confirmations
+- 📄 Document verification reminders
+- 🎉 Collection readiness alerts
 
-## Technical Stack
+## 🛠️ Technical Stack
 
-- **Frontend Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: Shadcn UI
-- **State Management**: React Query, Zustand
-- **Form Handling**: React Hook Form, Zod
-- **Authentication**: JWT
-- **Email Service**: Nodemailer
-- **File Upload**: Multi-part form data
+- **🚀 Frontend Framework**: Next.js 14 (App Router)
+- **📝 Language**: TypeScript
+- **🎨 Styling**: Tailwind CSS
+- **🧩 UI Components**: Shadcn UI
+- **🗃️ State Management**: React Query, Zustand
+- **📋 Form Handling**: React Hook Form, Zod
+- **🔐 Authentication**: JWT
+- **📧 Email Service**: Nodemailer
+- **📎 File Upload**: Multi-part form data
 
-## Getting Started
+## 🚀 Getting Started
 
-1. **Prerequisites**
+1. **📋 Prerequisites**
 
    ```bash
    Node.js 18+
    pnpm
    ```
 
-2. **Installation**
+2. **⬇️ Installation**
 
    ```bash
    git clone <repository-url>
@@ -127,7 +127,7 @@ PassGo is a modern web application built with Next.js 14, TypeScript, and Tailwi
    pnpm install
    ```
 
-3. **Environment Setup**
+3. **⚙️ Environment Setup**
    Create a `.env.local` file:
 
    ```env
@@ -142,48 +142,71 @@ PassGo is a modern web application built with Next.js 14, TypeScript, and Tailwi
    GOOGLE_CLOUD_API_KEY=
    ```
 
-4. **Development**
+4. **🔧 Development**
 
    ```bash
    pnpm run dev
    ```
 
-5. **Build**
+5. **🏗️ Build**
    ```bash
    pnpm run build
    pnpm start
    ```
 
-## Project Structure
+## 🐳 Docker Deployment
+
+For containerized deployment, see [DOCKER.md](./DOCKER.md) for detailed instructions.
+
+### ⚡ Quick Docker Start
+
+```bash
+# Using Docker Compose (recommended)
+docker-compose up --build
+
+# Or using Docker directly
+docker build -t passgo-fe .
+docker run -p 3000:3000 passgo-fe
+```
+
+### 🎯 Docker Features
+
+- 🏗️ Multi-stage optimized build
+- 🏔️ Alpine Linux base for minimal size
+- 💓 Health monitoring endpoint
+- 🔧 Environment variable support
+- 🚀 Production-ready configuration
+
+## 📁 Project Structure
 
 ```
 src/
-├── app/                    # Next.js app router pages
-├── components/            # Reusable components
-├── hooks/                # Custom React hooks
-├── api/                  # API integration
-├── types/               # TypeScript types/interfaces
-├── utils/               # Utility functions
-└── styles/              # Global styles
+├── app/                    # 🏠 Next.js app router pages
+├── components/            # 🧩 Reusable components
+├── hooks/                # 🎣 Custom React hooks
+├── api/                  # 🔌 API integration
+├── types/               # 📝 TypeScript types/interfaces
+├── utils/               # 🛠️ Utility functions
+└── styles/              # 🎨 Global styles
 ```
 
-## Google Cloud Document AI OCR Integration
+## 🤖 Google Cloud Document AI OCR Integration
 
-### Prerequisites
+### 📋 Prerequisites
 
-- Google Cloud Platform (GCP) Account
-- Active Billing Account
-- Google Cloud Project
+- ☁️ Google Cloud Platform (GCP) Account
+- 💳 Active Billing Account
+- 📁 Google Cloud Project
 
-### Setup Steps
+### 🛠️ Setup Steps
 
-1. **Create Google Cloud Project**
+1. **🏗️ Create Google Cloud Project**
 
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select an existing one
-   - Enable billing for the project
+   - 🌐 Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - ➕ Create a new project or select an existing one
+   - 💳 Enable billing for the project
 
-2. **Enable Required APIs**
+2. **🔌 Enable Required APIs**
 
    ```bash
    # Enable Document AI and Cloud Resource Manager APIs
@@ -191,7 +214,7 @@ src/
    gcloud services enable cloudresourcemanager.googleapis.com
    ```
 
-3. **Create Service Account**
+3. **👤 Create Service Account**
 
    ```bash
    # Create service account
@@ -205,23 +228,23 @@ src/
      --role="roles/documentai.admin"
    ```
 
-4. **Generate Service Account Key**
+4. **🔑 Generate Service Account Key**
 
    ```bash
    gcloud iam service-accounts keys create src/config/google-cloud-credentials.json \
      --iam-account=passgo-docai-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com
    ```
 
-5. **Create Document AI Processor**
+5. **⚙️ Create Document AI Processor**
 
-   - Go to [Document AI Processors](https://console.cloud.google.com/documentai/processors)
-   - Create a new processor (recommended: FORM_PARSER or OCR)
-   - Note down:
-     - Project ID
-     - Location
-     - Processor ID
+   - 🌐 Go to [Document AI Processors](https://console.cloud.google.com/documentai/processors)
+   - ➕ Create a new processor (recommended: FORM_PARSER or OCR)
+   - 📝 Note down:
+     - 📁 Project ID
+     - 📍 Location
+     - 🆔 Processor ID
 
-6. **Environment Configuration**
+6. **🔧 Environment Configuration**
    Create a `.env.local` file with the following:
    ```
    GOOGLE_CLOUD_PROJECT_ID=your-project-id
@@ -230,22 +253,22 @@ src/
    GOOGLE_CLOUD_API_KEY=your-api-key
    ```
 
-### Security Considerations
+### 🔐 Security Considerations
 
-- Never commit `google-cloud-credentials.json`
-- Add to `.gitignore`:
+- ❌ Never commit `google-cloud-credentials.json`
+- 📝 Add to `.gitignore`:
   ```
   src/config/google-cloud-credentials.json
   ```
 
-### Troubleshooting
+### 🔧 Troubleshooting
 
-- Ensure service account has correct permissions
-- Verify billing is enabled
-- Check network connectivity
-- Validate credentials file format
+- ✅ Ensure service account has correct permissions
+- 💳 Verify billing is enabled
+- 🌐 Check network connectivity
+- 📄 Validate credentials file format
 
-### Sample Credentials Structure
+### 📄 Sample Credentials Structure
 
 Create `src/config/google-cloud-credentials.json`:
 
@@ -264,19 +287,19 @@ Create `src/config/google-cloud-credentials.json`:
 }
 ```
 
-### Cost Estimation
+### 💰 Cost Estimation
 
-- Document AI pricing varies
-- Check [current pricing](https://cloud.google.com/document-ai/pricing)
-- Monitor usage in Google Cloud Console
+- 📊 Document AI pricing varies
+- 💲 Check [current pricing](https://cloud.google.com/document-ai/pricing)
+- 📈 Monitor usage in Google Cloud Console
 
-### Performance Optimization
+### ⚡ Performance Optimization
 
-- Implement caching mechanisms
-- Use batch processing for multiple documents
-- Handle rate limits gracefully
+- 🗄️ Implement caching mechanisms
+- 📦 Use batch processing for multiple documents
+- ⏱️ Handle rate limits gracefully
 
-### Recommended Dependencies
+### 📦 Recommended Dependencies
 
 ```bash
 pnpm add @google-cloud/documentai google-auth-library
