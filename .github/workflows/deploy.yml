@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - feat/CI-CD-integration
   pull_request:
     branches:
       - main
