@@ -154,6 +154,63 @@ PassGo is a modern web application built with Next.js 14, TypeScript, and Tailwi
    pnpm start
    ```
 
+## 🔄 CI/CD Pipeline
+
+PassGo includes a comprehensive CI/CD pipeline using GitHub Actions for automated testing and quality assurance.
+
+### 🚀 GitHub Actions Workflow
+
+The pipeline automatically runs on:
+
+- 📤 Push to `main` or `development` branches
+- 🔀 Pull requests to `main` or `development` branches
+
+**Pipeline Steps:**
+
+1. **🔍 Lint & Test**
+   - ✅ ESLint code quality checks
+   - 🔧 TypeScript compilation validation
+   - 💅 Prettier formatting verification
+   - 🛠️ Next.js build verification
+
+**Required GitHub Secrets:**
+
+- `NEXT_PUBLIC_API_URL` - Your backend API endpoint
+
+### 🧪 Local Testing Scripts
+
+**Quick Pipeline Test:**
+
+```bash
+# Test all CI/CD steps locally (recommended before pushing)
+bash scripts/test.sh
+```
+
+**Full Deployment with Docker:**
+
+```bash
+# Run complete pipeline + Docker deployment
+bash scripts/deploy.sh
+```
+
+**Individual Commands:**
+
+```bash
+# Run each step manually
+pnpm lint                    # ESLint checks
+npx tsc --noEmit            # TypeScript validation
+pnpm build                  # Build verification
+```
+
+### 📋 Script Features
+
+- **🔍 Environment validation** - Checks Node.js and pnpm versions
+- **📦 Dependency management** - Installs with frozen lockfile
+- **🎯 Quality gates** - Prevents bad code from reaching production
+- **🐳 Docker integration** - Full containerized deployment
+- **💓 Health checks** - Validates deployment success
+- **🎨 Colored output** - Clear visual feedback
+
 ## 🐳 Docker Deployment
 
 For containerized deployment, see [DOCKER.md](./DOCKER.md) for detailed instructions.
@@ -161,12 +218,17 @@ For containerized deployment, see [DOCKER.md](./DOCKER.md) for detailed instruct
 ### ⚡ Quick Docker Start
 
 ```bash
-# Using Docker Compose (recommended)
+# Using automated deployment script (recommended)
+bash scripts/deploy.sh
+
+# Using Docker Compose
 docker-compose up --build
 
 # Or using Docker directly
 docker build -t passgo-fe .
-docker run -p 3000:3000 passgo-fe
+docker run -p 3000:3000 \
+  -e NEXT_PUBLIC_API_URL=http://localhost:8080/api \
+  passgo-fe
 ```
 
 ### 🎯 Docker Features
@@ -188,6 +250,14 @@ src/
 ├── types/               # 📝 TypeScript types/interfaces
 ├── utils/               # 🛠️ Utility functions
 └── styles/              # 🎨 Global styles
+
+scripts/
+├── deploy.sh              # 🚀 Full CI/CD pipeline + Docker deployment
+└── test.sh               # 🧪 CI/CD pipeline testing only
+
+.github/
+└── workflows/
+    └── deploy.yml         # ⚙️ GitHub Actions CI/CD pipeline
 ```
 
 ## 🤖 Google Cloud Document AI OCR Integration

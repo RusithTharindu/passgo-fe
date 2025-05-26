@@ -1,0 +1,54 @@
+name: CI/CD PassGo Frontend
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - feat/CI-CD-integration
+  pull_request:
+    branches:
+      - main
+      - dev
+
+env:
+  NODE_VERSION: 18
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    name: Lint & Test
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Verify environment 🔍
+        run: |
+          node --version
+          pnpm --version
+          echo "Lock file exists: $(test -f pnpm-lock.yaml && echo 'Yes' || echo 'No')"
+
+      - name: Install dependencies 📦
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint 🔍
+        run: pnpm lint
+        continue-on-error: false
+
+      - name: Build Next.js app 🛠️
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api' }}
