@@ -30,7 +30,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        run: npm install -g pnpm@9.15.4
+        run: npm install -g pnpm@9.15.6
 
       - name: Install dependencies 📦
         run: pnpm install --frozen-lockfile
