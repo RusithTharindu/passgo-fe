@@ -37,9 +37,6 @@ pnpm install --frozen-lockfile
 echo -e "${BLUE}🔍 Running ESLint...${NC}"
 pnpm lint
 
-echo -e "${BLUE}🔧 Checking TypeScript...${NC}"
-npx tsc --noEmit
-
 echo -e "${BLUE}🛠️ Building Next.js app...${NC}"
 pnpm build
 

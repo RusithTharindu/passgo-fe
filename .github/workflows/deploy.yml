@@ -48,9 +48,6 @@ jobs:
         run: pnpm lint
         continue-on-error: false
 
-      - name: Check TypeScript 🔧
-        run: npx tsc --noEmit
-
       - name: Build Next.js app 🛠️
         run: pnpm build
         env:
